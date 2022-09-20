@@ -39,4 +39,12 @@ public class Member {
         return passwordEncoder.matches(password, this.password);
     }
 
+    public Member(String email, String password,String nickname, Authority authority, String provider){
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.authority = authority;
+        this.provider = provider;
+    }
+
 }

@@ -11,6 +11,10 @@ public class ResponseDto<T> {
     T data;
     Error error;
 
+    public static <T> ResponseDto<T> success(T data) {
+        return new ResponseDto<>(true, data, null);
+    }
+
     public ResponseDto(T data, ErrorCode errorCode) {
         if (data != null) {
             this.success = true;
