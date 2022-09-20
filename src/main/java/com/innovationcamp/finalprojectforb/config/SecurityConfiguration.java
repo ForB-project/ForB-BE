@@ -40,8 +40,8 @@ public class SecurityConfiguration {
                 //예외처리하기
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .oauth2Login()
+                .and()
+                .oauth2Login()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/member/**").permitAll()
