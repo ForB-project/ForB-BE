@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
@@ -51,7 +52,9 @@ public class TokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
+                // 유효시간 저장
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
+                // 사용할 암호화 알고리즘과 signature 에 들어갈 키값 세팅
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
