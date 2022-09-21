@@ -28,13 +28,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleUserService {
+public class GoogleMemberService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
