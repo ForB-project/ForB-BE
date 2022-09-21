@@ -2,8 +2,10 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.innovationcamp.finalprojectforb.config.GoogleConfigUtils;
+import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.service.GoogleMemberService;
 import com.innovationcamp.finalprojectforb.service.KakaoMemberService;
+import com.innovationcamp.finalprojectforb.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,12 +21,12 @@ import java.net.URISyntaxException;
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
-
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoKey;
     private final KakaoMemberService kakaoMemberService;
     private final GoogleMemberService googleMemberService;
     private final GoogleConfigUtils googleConfigUtils;
+    private final MemberService memberService;
 
 
     @GetMapping(value = "/api/member/login/google")
@@ -50,7 +53,7 @@ public class MemberController {
     @GetMapping("/api/member/login/kakao")
     public ResponseEntity<Object> moveKakaoInitUrl() {
         try {
-            URI redirectUri = new URI("https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoKey + "&redirect_uri=http://localhost:8080/user/kakao/callback&response_type=code");
+            URI redirectUri = new URI("https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoKey + "&redirect_uri=http://54.180.89.177/user/kakao/callback&response_type=code");
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirectUri);
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
@@ -62,6 +65,11 @@ public class MemberController {
     @GetMapping("/user/kakao/callback")
     public ResponseEntity<?> redirectKakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoMemberService.kakaoLogin(code, kakaoKey, response);
+    }
+
+    @PostMapping("/api/auth/member/logout")
+    public ResponseDto<?> logout(HttpServletRequest request) {
+        return  memberService.logoutMember(request);
     }
 
 }
