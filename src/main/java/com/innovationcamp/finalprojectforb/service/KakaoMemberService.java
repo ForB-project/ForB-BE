@@ -12,6 +12,7 @@ import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -36,6 +37,10 @@ public class KakaoMemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}") String grant_type;
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}") String redirect_url;
+    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}") String token_url;
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}") String user_info_url;
 
     // 토큰 발급 요청(POST)
     public ResponseEntity<?> kakaoLogin(String code, String kakaoKey, HttpServletResponse response) throws JsonProcessingException {
@@ -45,7 +50,7 @@ public class KakaoMemberService {
         Member kakaoUser = registerKakaoUserIfNeed(kakaoMemberInfo);
         forceLogin(kakaoUser);
         kakaoMembersAuthorizationInput(kakaoUser, response);
-        return ResponseEntity.ok().body(ResponseDto.success("Kakao OAuth Success"));
+        return ResponseEntity.ok().body(ResponseDto.success("Kakao OAuth 로그인 성공"));
     }
 
     private String getAccessToken(String code, String kakaoKey) throws JsonProcessingException{
@@ -56,9 +61,9 @@ public class KakaoMemberService {
 
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
+        body.add("grant_type", grant_type);
         body.add("client_id", kakaoKey);
-        body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
+        body.add("redirect_uri", redirect_url);
         body.add("code", code);
 
         // Http Header 와 Http Body를 하나의 오브젝트에 담기
@@ -69,7 +74,7 @@ public class KakaoMemberService {
         RestTemplate rt = new RestTemplate();
 
         ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",
+                token_url,
                 HttpMethod.POST,
                 kakaoTokenRequest,
                 String.class
@@ -94,7 +99,7 @@ public class KakaoMemberService {
         HttpEntity<MultiValueMap<String, String>> kakaoMemberInfoRequest = new HttpEntity<>(headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
-                "https://kapi.kakao.com/v2/user/me",
+                user_info_url,
                 HttpMethod.POST,
                 kakaoMemberInfoRequest,
                 String.class
