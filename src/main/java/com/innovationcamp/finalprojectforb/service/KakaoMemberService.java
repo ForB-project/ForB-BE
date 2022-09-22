@@ -144,7 +144,7 @@ public class KakaoMemberService {
         // response header에 token 추가
         TokenDto token = tokenProvider.generateTokenDto(kakaoUser);
         response.addHeader("Authorization", "BEARER " + token.getAccessToken());
-//        response.addHeader("refresh-token",token.getRefreshToken());
+        response.addHeader("refresh-token",token.getRefreshToken());
     }
 
 }
