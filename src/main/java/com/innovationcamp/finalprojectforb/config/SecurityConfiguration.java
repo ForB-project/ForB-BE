@@ -44,8 +44,7 @@ public class SecurityConfiguration {
                 .antMatchers("/api/member/**").permitAll()
                 .antMatchers("/api/oauth2/**").permitAll()
                 .antMatchers("/login/oauth2/**").permitAll()
-                .antMatchers("/user/**").permitAll()
-                .antMatchers("/api/search/**").permitAll()
+                .antMatchers("/api/**").permitAll()
                 //로드맵
                 .antMatchers("/api/roadmap/**").permitAll()
                 .anyRequest().authenticated()
