@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                 .antMatchers("/login/oauth2/**").permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/api/search/**").permitAll()
+                //로드맵
+                .antMatchers("/api/roadmap/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfig(SECRET_KEY, tokenProvider, userDetailsService));
