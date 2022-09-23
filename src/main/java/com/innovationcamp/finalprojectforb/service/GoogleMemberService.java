@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.innovationcamp.finalprojectforb.config.GoogleConfigUtils;
 import com.innovationcamp.finalprojectforb.dto.GoogleLoginDto;
+import com.innovationcamp.finalprojectforb.dto.MemberResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.jwt.TokenDto;
@@ -39,17 +40,23 @@ public class GoogleMemberService {
     private final GoogleConfigUtils googleConfigUtils;
     private final TokenProvider tokenProvider;
 
-    public ResponseEntity<?> googleLogin(String authCode, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<?> googleLogin(String authCode, HttpServletResponse response) throws JsonProcessingException {
         GoogleLoginDto userInfo = getGoogleUserInfo(authCode);
 
-        Member googleUser = signupGoogleUserIfNeeded(userInfo);
+        Member googleMember = signupGoogleUserIfNeeded(userInfo);
 
-        forceLogin(googleUser);
+        forceLogin(googleMember);
 
-        TokenDto tokenDto = tokenProvider.generateTokenDto(googleUser);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(googleMember);
         response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+        response.addHeader("refresh-token",tokenDto.getRefreshToken());
 
-        return ResponseEntity.ok().body(ResponseDto.success("Google OAuth 로그인 성공"));
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .id(googleMember.getId())
+                .nickname(googleMember.getNickname())
+                .authority(googleMember.getAuthority()).build();
+
+        return new ResponseDto<>(responseDto);
     }
 
 
@@ -90,9 +97,9 @@ public class GoogleMemberService {
 
     private Member signupGoogleUserIfNeeded(GoogleLoginDto userInfo) {
         String email = userInfo.getEmail();
-        Member googleUser = memberRepository.findByEmail(email).orElse(null);
+        Member googleMember = memberRepository.findByEmail(email).orElse(null);
 
-        if (googleUser == null) { // 회원가입
+        if (googleMember == null) { // 회원가입
             String nickname = userInfo.getName();
 
             String password = UUID.randomUUID().toString();
@@ -102,14 +109,14 @@ public class GoogleMemberService {
             String provider = "google";
 
 
-            googleUser = new Member(email, encodedPassword, nickname, authority, provider);
-            memberRepository.save(googleUser);
+            googleMember = new Member(email, encodedPassword, nickname, authority, provider);
+            memberRepository.save(googleMember);
         }
-        return googleUser;
+        return googleMember;
     }
 
-    private void forceLogin(Member googleUser) {
-        UserDetails userDetails = new UserDetailsImpl(googleUser);
+    private void forceLogin(Member googleMember) {
+        UserDetails userDetails = new UserDetailsImpl(googleMember);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
