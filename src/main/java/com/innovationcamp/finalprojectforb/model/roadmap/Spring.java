@@ -1,7 +1,11 @@
 package com.innovationcamp.finalprojectforb.model.roadmap;
 
-import javax.persistence.*;
+import lombok.Getter;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Getter
 @Entity
 public class Spring {
     @Id
@@ -10,6 +14,9 @@ public class Spring {
 
     @Column
     private String category;
+
+    @OneToMany(mappedBy = "spring", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Content> content;
 
     @JoinColumn(name = "title_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

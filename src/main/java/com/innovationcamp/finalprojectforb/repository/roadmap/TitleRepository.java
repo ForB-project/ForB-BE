@@ -1,4 +1,4 @@
-package com.innovationcamp.finalprojectforb.repository;
+package com.innovationcamp.finalprojectforb.repository.roadmap;
 
 import com.innovationcamp.finalprojectforb.model.roadmap.Html;
 import com.innovationcamp.finalprojectforb.model.roadmap.Title;

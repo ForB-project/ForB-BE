@@ -22,5 +22,4 @@ public class Html {
     @JoinColumn(name = "title_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
-
 }

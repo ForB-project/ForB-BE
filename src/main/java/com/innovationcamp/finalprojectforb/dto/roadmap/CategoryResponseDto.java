@@ -1,4 +1,4 @@
-package com.innovationcamp.finalprojectforb.model.roadmap.dto;
+package com.innovationcamp.finalprojectforb.dto.roadmap;
 
 import lombok.Builder;
 

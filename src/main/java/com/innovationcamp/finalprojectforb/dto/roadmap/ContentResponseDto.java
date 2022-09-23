@@ -1,4 +1,4 @@
-package com.innovationcamp.finalprojectforb.model.roadmap.dto;
+package com.innovationcamp.finalprojectforb.dto.roadmap;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,4 +10,5 @@ public class ContentResponseDto {
     private String title;
     private String link;
     private String thumbnail;
+    private String desc;
 }

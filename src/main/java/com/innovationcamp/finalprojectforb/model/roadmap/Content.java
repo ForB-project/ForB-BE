@@ -24,6 +24,9 @@ public class Content {
     @Column
     private String thumbnail;
 
+    @Column
+    private String desc;
+
     @JoinColumn(name = "html_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)
     private Html html;

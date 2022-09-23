@@ -52,6 +52,4 @@ public class SecurityConfiguration {
                 .apply(new JwtSecurityConfig(SECRET_KEY, tokenProvider, userDetailsService));
         return http.build();
     }
-
-
 }
