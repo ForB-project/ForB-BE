@@ -22,8 +22,8 @@ public class MemberController {
 
 
     @GetMapping("/api/member/login/google")
-    public ResponseDto<?> GoogleLogin(@RequestParam(value = "code") String authCode, HttpServletResponse response) throws JsonProcessingException {
-        return googleMemberService.googleLogin(authCode, response);
+    public ResponseDto<?> GoogleLogin(@RequestParam("code") String code, HttpServletResponse response) throws JsonProcessingException {
+        return googleMemberService.googleLogin(code, response);
     }
 
     @GetMapping("/api/member/login/kakao")
