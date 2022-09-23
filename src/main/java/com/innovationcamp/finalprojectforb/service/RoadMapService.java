@@ -31,23 +31,13 @@ public class RoadMapService {
         List<TitleResponseDto> titleResponseDtoList = new ArrayList<>();
 
         List<Html> htmlList = htmlRepository.findAll();
-        List<HtmlResponseDto> htmlResponseDtos = new ArrayList<>();
         List<Css> cssList = cssRepository.findAll();
-        List<CssResponseDto> cssResponseDtos = new ArrayList<>();
         List<Js> jsList = jsRepository.findAll();
-        List<JsResponseDto> jsResponseDtos = new ArrayList<>();
         List<React> reactList = reactRepository.findAll();
-        List<ReactResponseDto> reactResponseDtos = new ArrayList<>();
         List<Spring> springList = springRepository.findAll();
-        List<SpringResponseDto> springResponseDtos = new ArrayList<>();
 
         if (titleId == 1) {
             for (Html html : htmlList) {
-                htmlResponseDtos.add(
-                        HtmlResponseDto.builder()
-                                .id(title.getId())
-                                .category(html.getCategory())
-                                .build());
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
                                 .id(titleId)
@@ -57,11 +47,6 @@ public class RoadMapService {
             }
         } else if (titleId == 2) {
             for (Css css : cssList) {
-                cssResponseDtos.add(
-                        CssResponseDto.builder()
-                                .id(title.getId())
-                                .category(css.getCategory())
-                                .build());
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
                                 .id(titleId)
@@ -72,11 +57,6 @@ public class RoadMapService {
             }
         }else if (titleId == 3) {
             for (Js js : jsList) {
-                jsResponseDtos.add(
-                        JsResponseDto.builder()
-                                .id(title.getId())
-                                .category(js.getCategory())
-                                .build());
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
                                 .id(titleId)
@@ -87,11 +67,6 @@ public class RoadMapService {
             }
         } else if (titleId == 4) {
             for (React react : reactList) {
-                reactResponseDtos.add(
-                        ReactResponseDto.builder()
-                                .id(title.getId())
-                                .category(react.getCategory())
-                                .build());
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
                                 .id(titleId)
@@ -102,11 +77,6 @@ public class RoadMapService {
             }
         }else if (titleId == 5) {
             for (Spring spring : springList) {
-                springResponseDtos.add(
-                        SpringResponseDto.builder()
-                                .id(title.getId())
-                                .category(spring.getCategory())
-                                .build());
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
                                 .id(titleId)
