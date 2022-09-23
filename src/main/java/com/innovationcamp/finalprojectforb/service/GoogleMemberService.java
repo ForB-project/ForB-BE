@@ -40,8 +40,8 @@ public class GoogleMemberService {
     private final GoogleConfigUtils googleConfigUtils;
     private final TokenProvider tokenProvider;
 
-    public ResponseDto<?> googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
-        GoogleLoginDto userInfo = getGoogleUserInfo(code);
+    public ResponseDto<?> googleLogin(String authCode, HttpServletResponse response) throws JsonProcessingException {
+        GoogleLoginDto userInfo = getGoogleUserInfo(authCode);
 
         Member googleMember = signupGoogleUserIfNeeded(userInfo);
 
