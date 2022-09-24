@@ -15,4 +15,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Content> findByReactId(Long reactId);
 
     List<Content> findBySpringId(Long springId);
+
+    List<Content> findByTitleContaining(String keyword);
 }

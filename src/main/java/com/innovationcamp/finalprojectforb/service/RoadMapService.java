@@ -25,6 +25,8 @@ public class RoadMapService {
 
     private final TitleRepository titleRepository;
 
+    private final ContentRepository contentRepository;
+
     //타이틀별 카테고리 나열하기
     public ResponseDto<?> showCategory(Long titleId) {
         Title title = isCategory(titleId);
@@ -55,7 +57,7 @@ public class RoadMapService {
                                 .build());
 
             }
-        }else if (titleId == 3) {
+        } else if (titleId == 3) {
             for (Js js : jsList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
@@ -75,7 +77,7 @@ public class RoadMapService {
                                 .build());
 
             }
-        }else if (titleId == 5) {
+        } else if (titleId == 5) {
             for (Spring spring : springList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
@@ -88,6 +90,26 @@ public class RoadMapService {
         }
         return ResponseDto.success(titleResponseDtoList);
     }
+
+
+    //타이틀명으로 검색하기
+    public ResponseDto searchContents(String keyword) {
+        List<Content> contentList = contentRepository.findByTitleContaining(keyword);
+        List<ContentResponseDto> contentResponseDtots = new ArrayList<>();
+
+        for (Content content : contentList) {
+            contentResponseDtots.add(
+                    ContentResponseDto.builder()
+                            .id(content.getId())
+                            .title(content.getTitle())
+                            .link(content.getContentLink())
+                            .thumbnail(content.getThumbnail())
+                            .desc(content.getDesc())
+                            .build());
+        }
+        return ResponseDto.success(contentResponseDtots);
+    }
+
 
     private Title isCategory(Long titleId) {
         Optional<Title> optionalTitle = titleRepository.findById(titleId);
