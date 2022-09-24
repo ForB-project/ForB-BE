@@ -42,7 +42,7 @@ public class RoadMapService {
             for (Html html : htmlList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
-                                .id(titleId)
+                                .id(html.getId())
                                 .title(title.getTitle())
                                 .category(html.getCategory())
                                 .build());
@@ -51,7 +51,7 @@ public class RoadMapService {
             for (Css css : cssList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
-                                .id(titleId)
+                                .id(css.getId())
                                 .title(title.getTitle())
                                 .category(css.getCategory())
                                 .build());
@@ -61,7 +61,7 @@ public class RoadMapService {
             for (Js js : jsList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
-                                .id(titleId)
+                                .id(js.getId())
                                 .title(title.getTitle())
                                 .category(js.getCategory())
                                 .build());
@@ -71,7 +71,7 @@ public class RoadMapService {
             for (React react : reactList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
-                                .id(titleId)
+                                .id(react.getId())
                                 .title(title.getTitle())
                                 .category(react.getCategory())
                                 .build());
@@ -81,7 +81,7 @@ public class RoadMapService {
             for (Spring spring : springList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()
-                                .id(titleId)
+                                .id(spring.getId())
                                 .title(title.getTitle())
                                 .category(spring.getCategory())
                                 .build());

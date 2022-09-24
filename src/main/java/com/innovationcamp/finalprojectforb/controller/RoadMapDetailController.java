@@ -39,7 +39,7 @@ public class RoadMapDetailController {
     }
 
     //spring detail
-    @GetMapping("/api/roadmap/react/{springId}")
+    @GetMapping("/api/roadmap/spring/{springId}")
     public ResponseDto<?> showRoadmapSpring(@PathVariable Long springId){
         return roadMapDetailServercie.showRoadmapSpring(springId);
     }
