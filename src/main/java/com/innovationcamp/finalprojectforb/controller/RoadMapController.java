@@ -18,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoadMapController {
     private final RoadMapService roadMapServercie;
 
+    //타이틀 나타내기
+    @GetMapping("/api/roadmap/title")
+    public ResponseDto<?> showTitle(){
+        return roadMapServercie.showTitle();
+    }
+
     //타이틀별 카테고리 나열하기
     @GetMapping("/api/roadmap/category/{titleId}")
     public ResponseDto<?> showCategoryHtml(@PathVariable Long titleId){

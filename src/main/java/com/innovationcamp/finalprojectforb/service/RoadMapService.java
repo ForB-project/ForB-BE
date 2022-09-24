@@ -27,6 +27,20 @@ public class RoadMapService {
 
     private final ContentRepository contentRepository;
 
+    //타이틀 나타내기
+    public ResponseDto<?> showTitle() {
+        List<Title> titleList = titleRepository.findAll();
+        List<TitleListResDto> titleListResDtos = new ArrayList<>();
+        for (Title title : titleList) {
+            titleListResDtos.add(
+                    TitleListResDto.builder()
+                            .id(title.getId())
+                            .title(title.getTitle())
+                            .build());
+        }
+        return ResponseDto.success(titleListResDtos);
+    }
+
     //타이틀별 카테고리 나열하기
     public ResponseDto<?> showCategory(Long titleId) {
         Title title = isCategory(titleId);
@@ -115,4 +129,5 @@ public class RoadMapService {
         Optional<Title> optionalTitle = titleRepository.findById(titleId);
         return optionalTitle.orElse(null);
     }
+
 }
