@@ -93,7 +93,7 @@ public class RoadMapService {
 
 
     //타이틀명으로 검색하기
-    public ResponseDto searchContents(String keyword) {
+    public ResponseDto<?> searchContents(String keyword) {
         List<Content> contentList = contentRepository.findByTitleContaining(keyword);
         List<ContentResponseDto> contentResponseDtots = new ArrayList<>();
 
