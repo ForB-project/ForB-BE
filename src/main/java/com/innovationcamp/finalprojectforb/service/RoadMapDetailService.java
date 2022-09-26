@@ -50,7 +50,7 @@ public class RoadMapDetailService {
                         .title(content.getTitle())
                         .link(content.getContentLink())
                         .thumbnail(content.getThumbnail())
-                        .desc(content.getDesc())
+                        .desc(content.getDescription())
                         .build());
             }
 

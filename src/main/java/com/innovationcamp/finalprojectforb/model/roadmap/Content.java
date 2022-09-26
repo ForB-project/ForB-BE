@@ -25,7 +25,7 @@ public class Content {
     private String thumbnail;
 
     @Column
-    private String desc;
+    private String description;
 
     @JoinColumn(name = "html_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)
