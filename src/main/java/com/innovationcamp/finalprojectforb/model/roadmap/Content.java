@@ -39,6 +39,10 @@ public class Content {
     @ManyToOne(fetch = FetchType.EAGER)
     private Js js;
 
+    @JoinColumn(name = "java_id", nullable = true)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Java java;
+
     @JoinColumn(name = "react_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)
     private React react;

@@ -29,16 +29,36 @@ public class RoadMapService {
 
     //타이틀 나타내기
     public ResponseDto<?> showTitle() {
-        List<Title> titleList = titleRepository.findAll();
-        List<TitleListResDto> titleListResDtos = new ArrayList<>();
-        for (Title title : titleList) {
-            titleListResDtos.add(
+        List<Title> frontList = titleRepository.findTop4ByOrderById();
+        List<Title> backList = titleRepository.findAllByIdNot(3L);
+        //프론트엔드 백엔드 리스트 각각 반환
+        List<TitleListResDto> frontListResDtos = new ArrayList<>();
+        List<TitleListResDto> backListResDtos = new ArrayList<>();
+        //둘다
+        List<AllTitleListResDto> allTitleListResDtoList = new ArrayList<>();
+        for (Title title : frontList) {
+            frontListResDtos.add(
                     TitleListResDto.builder()
                             .id(title.getId())
                             .title(title.getTitle())
                             .build());
         }
-        return ResponseDto.success(titleListResDtos);
+        for (Title title : backList) {
+            backListResDtos.add(
+                    TitleListResDto.builder()
+                            .id(title.getId())
+                            .title(title.getTitle())
+                            .build());
+            if (title.getId() == 4L) {
+                backListResDtos.remove(2);
+            }
+        }
+        allTitleListResDtoList.add(
+                AllTitleListResDto.builder()
+                        .frontList(frontListResDtos)
+                        .backList(backListResDtos)
+                        .build());
+        return ResponseDto.success(allTitleListResDtoList);
     }
 
     //타이틀별 카테고리 나열하기

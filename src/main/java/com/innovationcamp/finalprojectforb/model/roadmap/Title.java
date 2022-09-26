@@ -36,6 +36,9 @@ public class Title {
     private List<React> react;
 
     @OneToMany(mappedBy = "title", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Java> java;
+
+    @OneToMany(mappedBy = "title", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Spring> spring;
 
     @JoinColumn(name = "member_id", nullable = true)
