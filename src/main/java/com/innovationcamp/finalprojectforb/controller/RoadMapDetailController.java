@@ -38,6 +38,12 @@ public class RoadMapDetailController {
         return roadMapDetailServercie.showRoadmapReact(reactId);
     }
 
+    //java detail
+    @GetMapping("/api/roadmap/java/{javaId}")
+    public ResponseDto<?> showRoadmapJava(@PathVariable Long javaId){
+        return roadMapDetailServercie.showRoadmapJava(javaId);
+    }
+
     //spring detail
     @GetMapping("/api/roadmap/spring/{springId}")
     public ResponseDto<?> showRoadmapSpring(@PathVariable Long springId){

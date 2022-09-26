@@ -20,6 +20,7 @@ public class RoadMapService {
     private final JsRepository jsRepository;
 
     private final ReactRepository reactRepository;
+    private final JavaRepository javaRepository;
 
     private final SpringRepository springRepository;
 
@@ -70,6 +71,7 @@ public class RoadMapService {
         List<Css> cssList = cssRepository.findAll();
         List<Js> jsList = jsRepository.findAll();
         List<React> reactList = reactRepository.findAll();
+        List<Java> javaList = javaRepository.findAll();
         List<Spring> springList = springRepository.findAll();
 
         if (titleId == 1) {
@@ -112,6 +114,16 @@ public class RoadMapService {
 
             }
         } else if (titleId == 5) {
+            for (Java java : javaList) {
+                titleResponseDtoList.add(
+                        TitleResponseDto.builder()
+                                .id(java.getId())
+                                .title(title.getTitle())
+                                .category(java.getCategory())
+                                .build());
+
+            }
+        } else if (titleId == 6) {
             for (Spring spring : springList) {
                 titleResponseDtoList.add(
                         TitleResponseDto.builder()

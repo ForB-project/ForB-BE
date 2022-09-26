@@ -25,6 +25,7 @@ public class RoadMapDetailService {
 
     private final ReactRepository reactRepository;
 
+    private final JavaRepository javaRepository;
     private final SpringRepository springRepository;
     private final ContentRepository contentRepository;
 
@@ -57,7 +58,7 @@ public class RoadMapDetailService {
             htmlDtoList.add(
                     HtmlResponseDto.builder()
                             .id(html.getId())
-                            .title("HTML") // 추후 삭제여부 협의
+                            .title(html.getTitle().getTitle())
                             .category(html.getCategory())
                             .contentList(contentResponseDtoList)
                             .build()
@@ -92,7 +93,7 @@ public class RoadMapDetailService {
         cssResponseDtoList.add(
                 CssResponseDto.builder()
                         .id(css.getId())
-                        .title("CSS") // 추후 삭제여부 협의
+                        .title(css.getTitle().getTitle())
                         .category(css.getCategory())
                         .contentList(contentResponseDtoList)
                         .build()
@@ -127,7 +128,7 @@ public class RoadMapDetailService {
         jsResponseDtoList.add(
                 JsResponseDto.builder()
                         .id(js.getId())
-                        .title("JS") // 추후 삭제여부 협의
+                        .title(js.getTitle().getTitle())
                         .category(js.getCategory())
                         .contentList(contentResponseDtoList)
                         .build()
@@ -162,13 +163,49 @@ public class RoadMapDetailService {
         reactResponseDtoList.add(
                 ReactResponseDto.builder()
                         .id(react.getId())
-                        .title("REACT") // 추후 삭제여부 협의
+                        .title(react.getTitle().getTitle())
                         .category(react.getCategory())
                         .contentList(contentResponseDtoList)
                         .build()
         );
         return ResponseDto.success(reactResponseDtoList);
     }
+
+    //java detail
+    public ResponseDto<?> showRoadmapJava(Long javaId) {
+        Java java = isPresentJava(javaId);
+//        Member member = validateMember(request);
+//
+//        if (member == null) {
+//            throw new NullPointerException("Token이 유효하지 않습니다.");
+//        }
+        List<JavaResponseDto> javaResponseDtoList = new ArrayList<>();
+
+
+        List<Content> contentList = contentRepository.findByReactId(javaId);
+        List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
+
+        for (Content content : contentList) {
+            contentResponseDtoList.add(
+                    ContentResponseDto.builder()
+                            .id(content.getId())
+                            .title(content.getTitle())
+                            .link(content.getContentLink())
+                            .thumbnail(content.getThumbnail())
+                            .build());
+        }
+
+        javaResponseDtoList.add(
+                JavaResponseDto.builder()
+                        .id(java.getId())
+                        .title(java.getTitle().getTitle())
+                        .category(java.getCategory())
+                        .contentList(contentResponseDtoList)
+                        .build()
+        );
+        return ResponseDto.success(javaResponseDtoList);
+    }
+
 
 
     //spring detail
@@ -198,7 +235,7 @@ public class RoadMapDetailService {
         springResponseDtoList.add(
                 SpringResponseDto.builder()
                         .id(spring.getId())
-                        .title("SPRING") // 추후 삭제여부 협의
+                        .title(spring.getTitle().getTitle())
                         .category(spring.getCategory())
                         .contentList(contentResponseDtoList)
                         .build()
@@ -228,6 +265,10 @@ public class RoadMapDetailService {
         return optionalReact.orElse(null);
     }
 
+    private Java isPresentJava(Long javaId) {
+        Optional<Java> optionalJava = javaRepository.findById(javaId);
+        return optionalJava.orElse(null);
+    }
     private Spring isPresentSpring(Long springId) {
         Optional<Spring> optionalSpring = springRepository.findById(springId);
         return optionalSpring.orElse(null);
