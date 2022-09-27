@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -88,16 +89,28 @@ public class TestService {
     }
 
     public TestResultResponseDto result(TestResultRequestDto testResultRequestDto) {
-        int[] result = testResultRequestDto.getResult_list();
-        String FB = (result[0] / 100 > result[0] % 100) ? "F" : "B";
-        if (FB.equals("F")) {
-            String type = (result[1] / 100 > result[1] % 100) ? "G" : "H";
-            Optional<StackType> stackType = stackTypeRepository.findByStackType(type);
+        String type = testResultRequestDto.getType();
+        int answerSum = testResultRequestDto.getAnswerSum();
+        if (Objects.equals(type, "F")) {
+            String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
+            Optional<StackType> stackType = stackTypeRepository.findByStackType(GH);
             return new TestResultResponseDto(stackType);
         } else {
-            String type = (result[2] / 100 > result[2] % 100) ? "R" : "S";
-            Optional<StackType> stackType = stackTypeRepository.findByStackType(type);
+            String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
+            Optional<StackType> stackType = stackTypeRepository.findByStackType(RS);
             return new TestResultResponseDto(stackType);
         }
     }
+//        int[] result = testResultRequestDto.getResult_list();
+//        String FB = (result[0] / 100 > result[0] % 100) ? "F" : "B";
+//        if (FB.equals("F")) {
+//            String GH = (result[1] / 100 > result[1] % 100) ? "G" : "H";
+//            Optional<StackType> stackType = stackTypeRepository.findByStackType(GH);
+//            return new TestResultResponseDto(stackType);
+//        } else {
+//            String RS = (result[2] / 100 > result[2] % 100) ? "R" : "S";
+//            Optional<StackType> stackType = stackTypeRepository.findByStackType(RS);
+//            return new TestResultResponseDto(stackType);
+//        }
+//    }
 }

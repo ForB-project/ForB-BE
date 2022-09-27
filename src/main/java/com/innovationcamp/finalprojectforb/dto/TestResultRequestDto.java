@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestResultRequestDto {
-    private int[] result_list;
+    private String type;
+    private int answerSum;
 }

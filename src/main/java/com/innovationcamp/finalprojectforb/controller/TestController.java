@@ -28,7 +28,7 @@ public class TestController {
         testService.createDB2();
     }
 
-    @GetMapping("/api/test/start")
+    @GetMapping("/api/test")
     public List<Test> getAllTestList(){
         return testService.getAllTestList();
     }
