@@ -23,13 +23,22 @@ public class StackType {
     private String stackType;
 
     @Column(nullable = false)
-    private String description;
+    private String title;
+
+    @Column(nullable = false)
+    private String description1;
+
+    @Column(nullable = false)
+    private String description2;
+
 
     //이미지 넣기
 
-    public StackType(String stackType, String description) {
+    public StackType(String stackType, String title, String description1, String description2) {
         this.stackType = stackType;
-        this.description = description;
+        this.title = title;
+        this.description1 = description1;
+        this.description2 = description2;
     }
 
 }

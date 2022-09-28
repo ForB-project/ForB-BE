@@ -16,6 +16,8 @@ public class TestResultResponseDto {
 
     private Long id;
     private String stackType;
-    private String description;
+    private String title;
+    private String description1;
+    private String description2;
 
 }
