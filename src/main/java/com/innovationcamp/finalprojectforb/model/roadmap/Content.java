@@ -1,13 +1,13 @@
 package com.innovationcamp.finalprojectforb.model.roadmap;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Getter
 @Entity
 public class Content {
@@ -21,7 +21,7 @@ public class Content {
     @Column
     private String contentLink;
 
-    @Column
+    @Column(nullable = true)
     private String thumbnail;
 
     @Column
@@ -50,5 +50,6 @@ public class Content {
     @JoinColumn(name = "spring_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)
     private Spring spring;
+
 
 }

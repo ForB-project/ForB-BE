@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Getter
 @Builder
-public class ContentResponseDto {
+public class ContentReqDto {
     private Long id;
     private String title;
     private String link;

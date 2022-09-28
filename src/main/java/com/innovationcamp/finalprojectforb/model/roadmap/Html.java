@@ -1,10 +1,11 @@
 package com.innovationcamp.finalprojectforb.model.roadmap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+
 
 @Getter
 @Entity
@@ -22,4 +23,9 @@ public class Html {
     @JoinColumn(name = "title_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
+
+    public Long getId(Long htmlId) {
+        this.id = htmlId;
+        return htmlId;
+    }
 }

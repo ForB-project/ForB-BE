@@ -22,5 +22,8 @@ public class React {
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
 
-
+    public Long getId(Long reactId) {
+        this.id = reactId;
+        return reactId;
+    }
 }
