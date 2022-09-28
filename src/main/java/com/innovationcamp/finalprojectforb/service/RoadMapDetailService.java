@@ -7,6 +7,9 @@ import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.roadmap.*;
 import com.innovationcamp.finalprojectforb.repository.roadmap.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,15 +36,16 @@ public class RoadMapDetailService {
     private final TitleRepository titleRepository;
 
     //html detail
-    public ResponseDto<?> showRoadmapHtml(Long htmlId) {
+    public ResponseDto<?> showRoadmapHtml(Long htmlId, int page, int size) {
         Html html = isPresentHtml(htmlId);
 //        Member member = validateMember(request);
 //
 //        if (member == null) {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
-            List<HtmlResponseDto> htmlDtoList = new ArrayList<>();
-            List<Content> contentList = contentRepository.findByHtmlId(htmlId);
+        List<HtmlResponseDto> htmlDtoList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page,size);
+            Page<Content> contentList = contentRepository.findByHtmlId(htmlId,pageable);
             List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
             for (Content content : contentList) {
@@ -67,7 +71,7 @@ public class RoadMapDetailService {
     }
 
     //css detail
-    public ResponseDto<?> showRoadmapCss(Long cssId) {
+    public ResponseDto<?> showRoadmapCss(Long cssId, int page, int size) {
         Css css = isPresentCss(cssId);
 //        Member member = validateMember(request);
 //
@@ -75,9 +79,8 @@ public class RoadMapDetailService {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
         List<CssResponseDto> cssResponseDtoList = new ArrayList<>();
-
-
-        List<Content> contentList = contentRepository.findByCssId(cssId);
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Content> contentList = contentRepository.findByCssId(cssId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
@@ -87,6 +90,7 @@ public class RoadMapDetailService {
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
                             .build());
         }
 
@@ -102,7 +106,7 @@ public class RoadMapDetailService {
     }
 
     //js detail
-    public ResponseDto<?> showRoadmapJs(Long jsId) {
+    public ResponseDto<?> showRoadmapJs(Long jsId, int page, int size) {
         Js js = isPresentJs(jsId);
 //        Member member = validateMember(request);
 //
@@ -110,9 +114,8 @@ public class RoadMapDetailService {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
         List<JsResponseDto> jsResponseDtoList = new ArrayList<>();
-
-
-        List<Content> contentList = contentRepository.findByJsId(jsId);
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Content> contentList = contentRepository.findByJsId(jsId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
@@ -122,6 +125,7 @@ public class RoadMapDetailService {
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
                             .build());
         }
 
@@ -137,7 +141,7 @@ public class RoadMapDetailService {
     }
 
     //react detail
-    public ResponseDto<?> showRoadmapReact(Long reactId) {
+    public ResponseDto<?> showRoadmapReact(Long reactId, int page, int size) {
         React react = isPresentReact(reactId);
 //        Member member = validateMember(request);
 //
@@ -145,9 +149,8 @@ public class RoadMapDetailService {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
         List<ReactResponseDto> reactResponseDtoList = new ArrayList<>();
-
-
-        List<Content> contentList = contentRepository.findByReactId(reactId);
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Content> contentList = contentRepository.findByReactId(reactId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
@@ -157,6 +160,7 @@ public class RoadMapDetailService {
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
                             .build());
         }
 
@@ -172,7 +176,7 @@ public class RoadMapDetailService {
     }
 
     //java detail
-    public ResponseDto<?> showRoadmapJava(Long javaId) {
+    public ResponseDto<?> showRoadmapJava(Long javaId, int page, int size) {
         Java java = isPresentJava(javaId);
 //        Member member = validateMember(request);
 //
@@ -180,9 +184,8 @@ public class RoadMapDetailService {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
         List<JavaResponseDto> javaResponseDtoList = new ArrayList<>();
-
-
-        List<Content> contentList = contentRepository.findByReactId(javaId);
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Content> contentList = contentRepository.findByJavaId(javaId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
@@ -192,6 +195,7 @@ public class RoadMapDetailService {
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
                             .build());
         }
 
@@ -209,7 +213,7 @@ public class RoadMapDetailService {
 
 
     //spring detail
-    public ResponseDto<?> showRoadmapSpring(Long springId) {
+    public ResponseDto<?> showRoadmapSpring(Long springId, int page, int size) {
         Spring spring = isPresentSpring(springId);
 //        Member member = validateMember(request);
 //
@@ -217,9 +221,8 @@ public class RoadMapDetailService {
 //            throw new NullPointerException("Token이 유효하지 않습니다.");
 //        }
         List<SpringResponseDto> springResponseDtoList = new ArrayList<>();
-
-
-        List<Content> contentList = contentRepository.findBySpringId(springId);
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Content> contentList = contentRepository.findBySpringId(springId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
@@ -229,6 +232,7 @@ public class RoadMapDetailService {
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
                             .build());
         }
 
