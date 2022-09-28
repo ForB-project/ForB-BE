@@ -9,8 +9,9 @@ import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Comment;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.MyRoadmap;
+import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.repository.CommentRepository;
-import com.innovationcamp.finalprojectforb.repository.MyRoadmapRepository;
+import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,44 +26,56 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final MyRoadmapRepository myRoadmapRepository;
+    private final PostRepository postRepository;
 
     public List<CommentResponseDto> getAllComment() {
         List<Comment> commentList = commentRepository.findAllByOrderByCreatedAtDesc();
-
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
         for (Comment comment : commentList) {
             commentResponseDtoList.add(new CommentResponseDto(comment));
         }
         return commentResponseDtoList;
     }
 
-    public CommentResponseDto createComment(Long roadmapId, CommentRequestDto requestDto) {
-        Member member = getMember();
-        MyRoadmap myRoadmap = isPresentRoadmap(roadmapId);
+    public ResponseDto<CommentResponseDto> createComment(Long postId, CommentRequestDto requestDto, Member member) {
+        Post post = isPresentPost(postId);
+        if (!Objects.equals(post.getMember().getId(), member.getId())) {
+            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+        }
         Comment comment = Comment.builder()
-                .myRoadmap(myRoadmap)
-                .nickname(getMember().getNickname())
+                .post(post)
                 .content(requestDto.getContent())
                 .member(member)
                 .build();
         commentRepository.save(comment);
-        return new CommentResponseDto(comment);
+        return ResponseDto.success(
+                CommentResponseDto.builder()
+                        .postId(postId)
+                        .id(comment.getId())
+                        .nickname(member.getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .build());
     }
 
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto ) {
-        Member member = getMember();
+    public ResponseDto<CommentResponseDto>updateComment(Long commentId, CommentRequestDto requestDto, Member member) {
         Comment comment = isPresentComment(commentId);
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
             throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
         }
         comment.update(requestDto);
         comment = commentRepository.save(comment);
-        return new CommentResponseDto(comment);
+        return ResponseDto.success(
+                CommentResponseDto.builder()
+                        .id(comment.getId())
+                        .nickname(member.getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .build());
     }
 
-    public void deleteComment(Long commentId) {
-        Member member = getMember();
+    public void deleteComment(Long commentId, Member member) {
         Comment comment = isPresentComment(commentId);
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
             throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
@@ -70,13 +83,9 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public Member getMember(){
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getMember();
-    }
-    public MyRoadmap isPresentRoadmap(Long id) {
-        Optional<MyRoadmap> optionalMyRoadmap = myRoadmapRepository.findById(id);
-        return optionalMyRoadmap.orElse(null);
+    public Post isPresentPost(Long id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        return optionalPost.orElse(null);
     }
     public Comment isPresentComment(Long id) {
         Optional<Comment> optionalComment = commentRepository.findById(id);

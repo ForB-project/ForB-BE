@@ -4,9 +4,12 @@ import com.innovationcamp.finalprojectforb.dto.CommentRequestDto;
 import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
+import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,11 +37,11 @@ public class CommentController {
         return new ResponseDto<>(commentResponseDtoList);
     }
 
-    @PostMapping("/api/auth/comment/{roadmapId}")
-    public ResponseDto<CommentResponseDto> createComment(@PathVariable Long roadmapId, @RequestBody CommentRequestDto requestDto) {
-        CommentResponseDto commentResponseDto;
+    @PostMapping("/api/auth/comment/{postId}")
+    public ResponseDto<CommentResponseDto> createComment(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
         try {
-            commentResponseDto = commentService.createComment(roadmapId,requestDto);
+            Member member = userDetails.getMember();
+            return commentService.createComment(postId, requestDto, member);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
@@ -46,15 +49,13 @@ public class CommentController {
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
-
-        return new ResponseDto<>(commentResponseDto);
     }
 
     @PutMapping("/api/auth/comment/{commentId}")
-    public ResponseDto<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto) {
-        CommentResponseDto commentResponseDto;
+    public ResponseDto<CommentResponseDto> updateComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
         try {
-            commentResponseDto = commentService.updateComment(commentId, requestDto);
+            Member member = userDetails.getMember();
+            return commentService.updateComment(commentId, requestDto, member);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
@@ -62,13 +63,13 @@ public class CommentController {
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
-        return new ResponseDto<>(commentResponseDto);
     }
 
     @DeleteMapping("/api/auth/comment/{commentId}")
-    public ResponseDto<String> deleteComment(@PathVariable Long commentId) {
+    public ResponseDto<String> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            commentService.deleteComment(commentId);
+            Member member = userDetails.getMember();
+            commentService.deleteComment(commentId, member);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
