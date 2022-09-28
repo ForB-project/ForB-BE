@@ -1,5 +1,6 @@
 package com.innovationcamp.finalprojectforb.service;
 
+import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultRequestDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultResponseDto;
 import com.innovationcamp.finalprojectforb.model.StackType;
@@ -7,8 +8,9 @@ import com.innovationcamp.finalprojectforb.repository.StackTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +38,44 @@ public class TestService {
     }
 
 
-    public TestResultResponseDto result(TestResultRequestDto testResultRequestDto) {
+    public ResponseDto<?> result(TestResultRequestDto testResultRequestDto) {
         String type = testResultRequestDto.getType();
         int answerSum = testResultRequestDto.getAnswerSum();
+
         if (Objects.equals(type, "F")) {
             String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
-            Optional<StackType> stackType = stackTypeRepository.findByStackType(GH);
-            return new TestResultResponseDto(stackType);
+            List<StackType> stackTypeList = stackTypeRepository.findByStackType(GH);
+            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+
+            for (StackType stackType : stackTypeList) {
+                testResultResponseDtoList.add(
+                        TestResultResponseDto.builder()
+                                .id(stackType.getId())
+//                                .title(stackType.getTitle())
+                                .stackType(stackType.getStackType())
+                                .description(stackType.getDescription())
+                                .build());
+            }
+
+            return ResponseDto.success(testResultResponseDtoList);
+
         } else {
             String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
-            Optional<StackType> stackType = stackTypeRepository.findByStackType(RS);
-            return new TestResultResponseDto(stackType);
+            List<StackType> stackTypeList = stackTypeRepository.findByStackType(RS);
+            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+
+            for (StackType stackType : stackTypeList) {
+                testResultResponseDtoList.add(
+                        TestResultResponseDto.builder()
+                                .id(stackType.getId())
+//                                .title(stackType.getTitle())
+                                .stackType(stackType.getStackType())
+                                .description(stackType.getDescription())
+                                .build());
+            }
+
+            return ResponseDto.success(testResultResponseDtoList);
+
         }
     }
-//        int[] result = testResultRequestDto.getResult_list();
-//        String FB = (result[0] / 100 > result[0] % 100) ? "F" : "B";
-//        if (FB.equals("F")) {
-//            String GH = (result[1] / 100 > result[1] % 100) ? "G" : "H";
-//            Optional<StackType> stackType = stackTypeRepository.findByStackType(GH);
-//            return new TestResultResponseDto(stackType);
-//        } else {
-//            String RS = (result[2] / 100 > result[2] % 100) ? "R" : "S";
-//            Optional<StackType> stackType = stackTypeRepository.findByStackType(RS);
-//            return new TestResultResponseDto(stackType);
-//        }
-//    }
 }
