@@ -23,18 +23,21 @@ public class Comment extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    private String nickname;
-    @Column(nullable = false)
     private String content;
 
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne
     private Member member;
 
-    @JoinColumn(name = "myRoadmap_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private MyRoadmap myRoadmap;
+    private Post post;
+
+    public Comment(CommentRequestDto commentRequestDto, Member member) {
+        this.content = commentRequestDto.getContent();
+        this.member = member;
+    }
 
     public void update(CommentRequestDto commentRequestDto) {
         this.content = commentRequestDto.getContent();

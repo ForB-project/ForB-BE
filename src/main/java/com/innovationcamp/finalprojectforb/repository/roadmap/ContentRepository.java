@@ -1,20 +1,24 @@
 package com.innovationcamp.finalprojectforb.repository.roadmap;
 
 import com.innovationcamp.finalprojectforb.model.roadmap.Content;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
-    List<Content> findByHtmlId(Long htmlId);
+    Page<Content> findByHtmlId(Long htmlId, Pageable pageable);
 
-    List<Content> findByCssId(Long cssId);
+    Page<Content> findByCssId(Long cssId, Pageable pageable);
 
-    List<Content> findByJsId(Long jsId);
+    Page<Content> findByJsId(Long jsId, Pageable pageable);
 
-    List<Content> findByReactId(Long reactId);
+    Page<Content> findByReactId(Long reactId, Pageable pageable);
 
-    List<Content> findBySpringId(Long springId);
+    Page<Content> findByJavaId(Long javaId, Pageable pageable);
+
+    Page<Content> findBySpringId(Long springId, Pageable pageable);
 
     List<Content> findByTitleContaining(String keyword);
 }

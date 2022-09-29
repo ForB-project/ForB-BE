@@ -21,4 +21,9 @@ public class Java {
     @JoinColumn(name = "title_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
+
+    public Long getId(Long javaId) {
+        this.id = javaId;
+        return javaId;
+    }
 }

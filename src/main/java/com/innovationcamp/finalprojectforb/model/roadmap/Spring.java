@@ -22,4 +22,8 @@ public class Spring {
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
 
+    public Long getId(Long springId) {
+        this.id = springId;
+        return springId;
+    }
 }

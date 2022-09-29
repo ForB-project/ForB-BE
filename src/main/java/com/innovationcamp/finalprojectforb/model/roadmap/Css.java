@@ -22,4 +22,9 @@ public class Css {
     @ManyToOne(fetch = FetchType.LAZY)
     private Title title;
 
+    public Long getId(Long cssId) {
+        this.id = cssId;
+        return cssId;
+    }
+
 }
