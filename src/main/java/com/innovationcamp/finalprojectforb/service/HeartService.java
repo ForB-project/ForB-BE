@@ -9,6 +9,7 @@ import com.innovationcamp.finalprojectforb.model.roadmap.Content;
 import com.innovationcamp.finalprojectforb.repository.HeartRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class HeartService {
@@ -51,22 +53,22 @@ public class HeartService {
 
         boolean check = false;//안좋아요
         for (Heart heart : heartList) {
-            if (Objects.equals(heart.getMember().getId(), member.getId())) {//이미 해당 유저가 좋아요 했을 경우
+            //이미 해당 유저가 좋아요 했을 경우
+            if (Objects.equals(heart.getMember().getId(), member.getId())) {
                 check = true; //좋아요
-                System.out.println("이미 좋아요 한 게시물 입니다.");
-                //content.setHeartCnt(content.getHeartCnt() - 1);
+                log.info("이미 좋아요 한 게시물 입니다.");
                 heartRepository.delete(heart);//좋아요 해제
                 break;
             }
         }
-        if (check != true) { // 안좋아요에서 POST할 경우 좋아요로 변경
-            System.out.println("좋아요");
+        // 안좋아요에서 POST할 경우 좋아요로 변경
+        if (check != true) {
+            log.info("좋아요");
             Heart heart = Heart.builder()
                     .member(member)
                     .content(content)
                     .build();
             heartRepository.save(heart);// 좋아요 저장
-           // content.setHeartCnt(content.getHeartCnt() + 1);
         }
         return ResponseDto.success("좋아요 버튼이 작동됐습니다");
     }
