@@ -1,6 +1,7 @@
 package com.innovationcamp.finalprojectforb.dto;
 
 import com.innovationcamp.finalprojectforb.model.Comment;
+import com.innovationcamp.finalprojectforb.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,19 +14,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentResponseDto {
-    private Long roadmapId;
+    private Long postId;
     private Long id;
     private String nickname;
     private String content;
     private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
     public CommentResponseDto(Comment comment) {
-        this.roadmapId = comment.getMyRoadmap().getId();
+        this.postId = comment.getPost().getId();
         this.id = comment.getId();
         this.nickname = comment.getMember().getNickname();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
-        this.modifiedAt = comment.getModifiedAt();
     }
 }

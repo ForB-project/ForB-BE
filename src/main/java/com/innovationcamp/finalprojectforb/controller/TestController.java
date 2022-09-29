@@ -2,7 +2,6 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultRequestDto;
-import com.innovationcamp.finalprojectforb.dto.TestResultResponseDto;
 import com.innovationcamp.finalprojectforb.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +23,7 @@ public class TestController {
 
 
     @PostMapping("/api/test/result")
-    public ResponseDto<TestResultResponseDto> result(@RequestBody TestResultRequestDto testResultRequestDto){
-        TestResultResponseDto testResultResponseDto;
-        testResultResponseDto = testService.result(testResultRequestDto);
-        return new ResponseDto<>(testResultResponseDto);
+    public ResponseDto<?> result(@RequestBody TestResultRequestDto testResultRequestDto){
+        return testService.result(testResultRequestDto);
     }
 }
