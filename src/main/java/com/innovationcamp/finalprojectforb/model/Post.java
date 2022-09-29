@@ -32,7 +32,7 @@ public class Post extends Timestamped{
     private Member member;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public Post(PostRequestDto postRequestDto, Member member) {
         this.title = postRequestDto.getTitle();
