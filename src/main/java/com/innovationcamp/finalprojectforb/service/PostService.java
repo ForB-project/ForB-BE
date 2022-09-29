@@ -38,6 +38,7 @@ public class PostService {
 
         for (Comment comment : post.getComments()) {
             CommentResponseDto commentResponseDto = CommentResponseDto.builder()
+                    .postId(postId)
                     .id(comment.getId())
                     .nickname(comment.getMember().getNickname())
                     .content(comment.getContent())
