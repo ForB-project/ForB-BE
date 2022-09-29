@@ -19,12 +19,13 @@ public class Heart {
     @Id
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "content_id")
+
+    @JoinColumn(name = "content_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Content content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Member member;
 
     public Heart(Content content, Member member){

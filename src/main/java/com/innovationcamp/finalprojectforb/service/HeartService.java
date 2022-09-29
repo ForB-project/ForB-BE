@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -45,15 +46,15 @@ public class HeartService {
 //            return ResponseDto.fail("NOT_FOUND", "존재하지 않는 콘텐츠 id 입니다.");
 //        }
 
-        List<Heart> reviewHeart = heartRepository.findByMemberIdAndContentId(member.getId(), contentId);
+        List<Heart> heartList = heartRepository.findByMemberIdAndContentId(member.getId(), contentId);
 
 
         boolean check = false;//안좋아요
-        for (Heart heart : reviewHeart) {
-            if (heart.getMember().equals(member)) {//이미 해당 유저가 좋아요 했을 경우
+        for (Heart heart : heartList) {
+            if (Objects.equals(heart.getMember().getId(), member.getId())) {//이미 해당 유저가 좋아요 했을 경우
                 check = true; //좋아요
                 System.out.println("이미 좋아요 한 게시물 입니다.");
-                content.setHeartCnt(content.getHeartCnt() - 1);
+                //content.setHeartCnt(content.getHeartCnt() - 1);
                 heartRepository.delete(heart);//좋아요 해제
                 break;
             }
@@ -65,7 +66,7 @@ public class HeartService {
                     .content(content)
                     .build();
             heartRepository.save(heart);// 좋아요 저장
-            content.setHeartCnt(content.getHeartCnt() + 1);
+           // content.setHeartCnt(content.getHeartCnt() + 1);
         }
         return ResponseDto.success("좋아요 버튼이 작동됐습니다");
     }
