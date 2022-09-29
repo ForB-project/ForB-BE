@@ -1,8 +1,11 @@
 package com.innovationcamp.finalprojectforb.model.roadmap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.innovationcamp.finalprojectforb.model.Heart;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -26,6 +29,10 @@ public class Content {
 
     @Column
     private String description;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Heart> heart;
 
     @JoinColumn(name = "html_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)

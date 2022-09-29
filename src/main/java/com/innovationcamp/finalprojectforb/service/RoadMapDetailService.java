@@ -3,8 +3,10 @@ package com.innovationcamp.finalprojectforb.service;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.*;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Heart;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.roadmap.*;
+import com.innovationcamp.finalprojectforb.repository.HeartRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,8 @@ public class RoadMapDetailService {
     private final SpringRepository springRepository;
     private final ContentRepository contentRepository;
 
+    private final HeartRepository heartRepository;
+
 
     private final TitleRepository titleRepository;
 
@@ -49,6 +53,8 @@ public class RoadMapDetailService {
             List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
             for (Content content : contentList) {
+                //좋아요 개수 반영
+                Long totalHeart = heartRepository.countHeartByContentId(content.getId());
                 contentResponseDtoList.add(
                 ContentResponseDto.builder()
                         .id(content.getId())
@@ -56,6 +62,7 @@ public class RoadMapDetailService {
                         .link(content.getContentLink())
                         .thumbnail(content.getThumbnail())
                         .desc(content.getDescription())
+                        .heartCnt(totalHeart)
                         .build());
             }
 
@@ -84,6 +91,7 @@ public class RoadMapDetailService {
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
+            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -91,6 +99,7 @@ public class RoadMapDetailService {
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCnt(totalHeart)
                             .build());
         }
 
@@ -119,6 +128,7 @@ public class RoadMapDetailService {
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
+            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -126,6 +136,7 @@ public class RoadMapDetailService {
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCnt(totalHeart)
                             .build());
         }
 
@@ -154,6 +165,7 @@ public class RoadMapDetailService {
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
+            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -161,6 +173,7 @@ public class RoadMapDetailService {
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCnt(totalHeart)
                             .build());
         }
 
@@ -189,6 +202,7 @@ public class RoadMapDetailService {
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
+            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -196,6 +210,7 @@ public class RoadMapDetailService {
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCnt(totalHeart)
                             .build());
         }
 
@@ -226,6 +241,7 @@ public class RoadMapDetailService {
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
         for (Content content : contentList) {
+            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -233,6 +249,7 @@ public class RoadMapDetailService {
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCnt(totalHeart)
                             .build());
         }
 
