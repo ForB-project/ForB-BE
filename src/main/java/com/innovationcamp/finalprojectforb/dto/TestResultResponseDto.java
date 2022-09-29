@@ -13,6 +13,11 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestResultResponseDto {
-    private Optional<StackType> result;
+
+    private Long id;
+    private String stackType;
+    private String title;
+    private String description1;
+    private String description2;
 
 }
