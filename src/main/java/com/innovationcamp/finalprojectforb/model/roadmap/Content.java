@@ -10,7 +10,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
 @Entity
 public class Content {
@@ -30,7 +29,10 @@ public class Content {
     @Column
     private String description;
 
-    @JsonIgnore
+    @Column(nullable = false)
+    private Long heartCnt = 0L;
+
+    @JsonIgnore// Restcontroller에서  Heart엔티티를 JSON으로 반환하는 과정에서 recursion 에러 발생 => serialize(직렬화) 과정에서 무한재귀 발생 해결방안
     @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Heart> heart;
 
@@ -58,5 +60,7 @@ public class Content {
     @ManyToOne(fetch = FetchType.EAGER)
     private Spring spring;
 
-
+    public void setHeartCnt(Long heartCnt){
+        this.heartCnt = heartCnt;
+    }
 }

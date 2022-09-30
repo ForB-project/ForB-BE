@@ -25,83 +25,57 @@ public class RoadMapDetailService {
     private final TokenProvider tokenProvider;
     private final HtmlRepository htmlRepository;
     private final CssRepository cssRepository;
-
     private final JsRepository jsRepository;
-
     private final ReactRepository reactRepository;
-
     private final JavaRepository javaRepository;
     private final SpringRepository springRepository;
     private final ContentRepository contentRepository;
-
     private final HeartRepository heartRepository;
 
-
-    private final TitleRepository titleRepository;
-
     //html detail
-    public ResponseDto<?> showRoadmapHtml(Long htmlId, int page, int size) {
+    public ResponseDto<?> showRoadmapHtml(Long htmlId, int page, int size, HttpServletRequest request) {
         Html html = isPresentHtml(htmlId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findByHtmlIdOrderByHeartCntDesc(htmlId, pageable);
+
         List<HtmlResponseDto> htmlDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-            Page<Content> contentList = contentRepository.findByHtmlId(htmlId,pageable);
-            List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
+        List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-            for (Content content : contentList) {
-                //좋아요 개수 반영
-                Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-                contentResponseDtoList.add(
-                ContentResponseDto.builder()
-                        .id(content.getId())
-                        .title(content.getTitle())
-                        .link(content.getContentLink())
-                        .thumbnail(content.getThumbnail())
-                        .desc(content.getDescription())
-                        .heartCnt(totalHeart)
-                        .build());
-            }
+        makeContentList(member, contentList, contentResponseDtoList);
 
-            htmlDtoList.add(
-                    HtmlResponseDto.builder()
-                            .id(html.getId())
-                            .title(html.getTitle().getTitle())
-                            .category(html.getCategory())
-                            .contentList(contentResponseDtoList)
-                            .build()
-            );
+        htmlDtoList.add(
+                HtmlResponseDto.builder()
+                        .id(html.getId())
+                        .title(html.getTitle().getTitle())
+                        .category(html.getCategory())
+                        .contentList(contentResponseDtoList)
+                        .build()
+        );
         return ResponseDto.success(htmlDtoList);
     }
 
     //css detail
-    public ResponseDto<?> showRoadmapCss(Long cssId, int page, int size) {
+    public ResponseDto<?> showRoadmapCss(Long cssId, int page, int size, HttpServletRequest request) {
         Css css = isPresentCss(cssId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findByCssIdOrderByHeartCntDesc(cssId, pageable);
+
         List<CssResponseDto> cssResponseDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Content> contentList = contentRepository.findByCssId(cssId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-        for (Content content : contentList) {
-            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-            contentResponseDtoList.add(
-                    ContentResponseDto.builder()
-                            .id(content.getId())
-                            .title(content.getTitle())
-                            .link(content.getContentLink())
-                            .thumbnail(content.getThumbnail())
-                            .desc(content.getDescription())
-                            .heartCnt(totalHeart)
-                            .build());
-        }
+        makeContentList(member, contentList, contentResponseDtoList);
 
         cssResponseDtoList.add(
                 CssResponseDto.builder()
@@ -115,30 +89,21 @@ public class RoadMapDetailService {
     }
 
     //js detail
-    public ResponseDto<?> showRoadmapJs(Long jsId, int page, int size) {
+    public ResponseDto<?> showRoadmapJs(Long jsId, int page, int size, HttpServletRequest request) {
         Js js = isPresentJs(jsId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findByJsIdOrderByHeartCntDesc(jsId, pageable);
+
         List<JsResponseDto> jsResponseDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Content> contentList = contentRepository.findByJsId(jsId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-        for (Content content : contentList) {
-            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-            contentResponseDtoList.add(
-                    ContentResponseDto.builder()
-                            .id(content.getId())
-                            .title(content.getTitle())
-                            .link(content.getContentLink())
-                            .thumbnail(content.getThumbnail())
-                            .desc(content.getDescription())
-                            .heartCnt(totalHeart)
-                            .build());
-        }
+        makeContentList(member, contentList, contentResponseDtoList);
 
         jsResponseDtoList.add(
                 JsResponseDto.builder()
@@ -152,30 +117,21 @@ public class RoadMapDetailService {
     }
 
     //react detail
-    public ResponseDto<?> showRoadmapReact(Long reactId, int page, int size) {
+    public ResponseDto<?> showRoadmapReact(Long reactId, int page, int size, HttpServletRequest request) {
         React react = isPresentReact(reactId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findByReactIdOrderByHeartCntDesc(reactId, pageable);
+
         List<ReactResponseDto> reactResponseDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Content> contentList = contentRepository.findByReactId(reactId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-        for (Content content : contentList) {
-            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-            contentResponseDtoList.add(
-                    ContentResponseDto.builder()
-                            .id(content.getId())
-                            .title(content.getTitle())
-                            .link(content.getContentLink())
-                            .thumbnail(content.getThumbnail())
-                            .desc(content.getDescription())
-                            .heartCnt(totalHeart)
-                            .build());
-        }
+        makeContentList(member, contentList, contentResponseDtoList);
 
         reactResponseDtoList.add(
                 ReactResponseDto.builder()
@@ -189,30 +145,20 @@ public class RoadMapDetailService {
     }
 
     //java detail
-    public ResponseDto<?> showRoadmapJava(Long javaId, int page, int size) {
+    public ResponseDto<?> showRoadmapJava(Long javaId, int page, int size, HttpServletRequest request) {
         Java java = isPresentJava(javaId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findByJavaIdOrderByHeartCntDesc(javaId, pageable);
+
         List<JavaResponseDto> javaResponseDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Content> contentList = contentRepository.findByJavaId(javaId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-        for (Content content : contentList) {
-            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-            contentResponseDtoList.add(
-                    ContentResponseDto.builder()
-                            .id(content.getId())
-                            .title(content.getTitle())
-                            .link(content.getContentLink())
-                            .thumbnail(content.getThumbnail())
-                            .desc(content.getDescription())
-                            .heartCnt(totalHeart)
-                            .build());
-        }
+        makeContentList(member, contentList, contentResponseDtoList);
 
         javaResponseDtoList.add(
                 JavaResponseDto.builder()
@@ -226,32 +172,22 @@ public class RoadMapDetailService {
     }
 
 
-
     //spring detail
-    public ResponseDto<?> showRoadmapSpring(Long springId, int page, int size) {
+    public ResponseDto<?> showRoadmapSpring(Long springId, int page, int size, HttpServletRequest request) {
         Spring spring = isPresentSpring(springId);
-//        Member member = validateMember(request);
-//
-//        if (member == null) {
-//            throw new NullPointerException("Token이 유효하지 않습니다.");
-//        }
+        Member member = validateMember(request);
+
+        if (member == null) {
+            throw new NullPointerException("Token이 유효하지 않습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Content> contentList = contentRepository.findBySpringIdOrderByHeartCntDesc(springId, pageable);
+
         List<SpringResponseDto> springResponseDtoList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Content> contentList = contentRepository.findBySpringId(springId,pageable);
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
 
-        for (Content content : contentList) {
-            Long totalHeart = heartRepository.countHeartByContentId(content.getId());
-            contentResponseDtoList.add(
-                    ContentResponseDto.builder()
-                            .id(content.getId())
-                            .title(content.getTitle())
-                            .link(content.getContentLink())
-                            .thumbnail(content.getThumbnail())
-                            .desc(content.getDescription())
-                            .heartCnt(totalHeart)
-                            .build());
-        }
+        makeContentList(member, contentList, contentResponseDtoList);
 
         springResponseDtoList.add(
                 SpringResponseDto.builder()
@@ -290,6 +226,7 @@ public class RoadMapDetailService {
         Optional<Java> optionalJava = javaRepository.findById(javaId);
         return optionalJava.orElse(null);
     }
+
     private Spring isPresentSpring(Long springId) {
         Optional<Spring> optionalSpring = springRepository.findById(springId);
         return optionalSpring.orElse(null);
@@ -302,4 +239,27 @@ public class RoadMapDetailService {
         return tokenProvider.getMemberFromAuthentication();
     }
 
+    private boolean isHeartcheck(Member member, Content content) {
+        List<Heart> heartList = heartRepository.findByMemberIdAndContentId(member.getId(), content.getId());
+        boolean heartcheck = false;
+        if (!heartList.isEmpty()) {
+            heartcheck = true;
+        }
+        return heartcheck;
+    }
+    private void makeContentList(Member member, Page<Content> contentList, List<ContentResponseDto> contentResponseDtoList) {
+        for (Content content : contentList) {
+            boolean heartcheck = isHeartcheck(member, content);
+            contentResponseDtoList.add(
+                    ContentResponseDto.builder()
+                            .id(content.getId())
+                            .title(content.getTitle())
+                            .link(content.getContentLink())
+                            .thumbnail(content.getThumbnail())
+                            .desc(content.getDescription())
+                            .heartCnt(content.getHeartCnt())
+                            .heartCheck(heartcheck)
+                            .build());
+        }
+    }
 }

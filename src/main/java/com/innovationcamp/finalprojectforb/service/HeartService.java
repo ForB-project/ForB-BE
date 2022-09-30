@@ -58,6 +58,7 @@ public class HeartService {
                 check = true; //좋아요
                 log.info("이미 좋아요 한 게시물 입니다.");
                 heartRepository.delete(heart);//좋아요 해제
+                content.setHeartCnt(content.getHeartCnt() - 1L);
                 break;
             }
         }
@@ -69,6 +70,7 @@ public class HeartService {
                     .content(content)
                     .build();
             heartRepository.save(heart);// 좋아요 저장
+            content.setHeartCnt(content.getHeartCnt() + 1L);
         }
         return ResponseDto.success("좋아요 버튼이 작동됐습니다");
     }
