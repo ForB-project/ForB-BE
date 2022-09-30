@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class CodeRequestDto {
     private int inputInt;
-    private String isCorrect;
+    private boolean correct;
 }
