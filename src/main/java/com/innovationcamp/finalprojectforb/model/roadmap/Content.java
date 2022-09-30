@@ -30,12 +30,8 @@ public class Content {
     @Column
     private String description;
 
-    @Column
-    private Long heartCnt = 0L;//개수 보여줄 용도
-
-    @JsonIgnore// Restcontroller에서  Heart엔티티를 JSON으로 반환하는 과정에서 recursion 에러 발생 => serialize(직렬화) 과정에서 무한재귀 발생 해결방안
+    @JsonIgnore
     @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    //지우는 용도
     private List<Heart> heart;
 
     @JoinColumn(name = "html_id", nullable = true)

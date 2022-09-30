@@ -14,4 +14,5 @@ public class ContentResponseDto {
     private String link;
     private String thumbnail;
     private String desc;
+    private Long heartCnt;
 }
