@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class CodeRequestDto {
-    private int inputInt;
-    private boolean correct;
+    private int inputInt1;
+    private int inputInt2;
 }
