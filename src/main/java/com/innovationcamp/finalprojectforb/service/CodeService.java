@@ -37,9 +37,9 @@ public class CodeService {
                     break;
                 }
                 treeHit++;
-                finalAnswer += "나무를 " + treeHit + "번 찍었습니다.";
+                finalAnswer += "나무를 " + treeHit + "번 찍었습니다.\n";
                 if (treeHit == secondInput) {
-                    finalAnswer += "나무 넘어갑니다.";
+                    finalAnswer += "나무 넘어갑니다.\n";
                 }
             }
         return ResponseDto.success(finalAnswer);
