@@ -7,10 +7,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @Entity
 public class Content {
     @Id
@@ -29,6 +29,7 @@ public class Content {
     @Column
     private String description;
 
+    @Builder.Default//@Builder 사용시 초기화할 필드가 있다면
     @Column(nullable = false)
     private Long heartCnt = 0L;
 

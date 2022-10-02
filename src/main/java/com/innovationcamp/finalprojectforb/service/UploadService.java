@@ -40,13 +40,14 @@ public class UploadService {
             image = null;
         }
         Content content = Content.builder()
-            .html(htmlIdSet)
-            .id(contentReqDto.getId())
-            .thumbnail(image)
-            .title(contentReqDto.getTitle())
-            .contentLink(contentReqDto.getLink())
-            .description(contentReqDto.getDesc())
-            .build();
+                .html(htmlIdSet)
+                .id(contentReqDto.getId())
+                .thumbnail(image)
+                .title(contentReqDto.getTitle())
+                .contentLink(contentReqDto.getLink())
+                .description(contentReqDto.getDesc())
+                .heartCnt(0L)
+                .build();
         contentRepository.save(content);
 
         return ResponseDto.success(
@@ -77,6 +78,7 @@ public class UploadService {
                 .title(contentReqDto.getTitle())
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
+                .heartCnt(0L)
                 .build();
         contentRepository.save(content);
 
@@ -101,6 +103,7 @@ public class UploadService {
                 .title(contentReqDto.getTitle())
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
+                .heartCnt(0L)
                 .build();
         contentRepository.save(content);
 
@@ -126,6 +129,7 @@ public class UploadService {
                 .title(contentReqDto.getTitle())
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
+                .heartCnt(0L)
                 .build();
         contentRepository.save(content);
 
@@ -150,6 +154,7 @@ public class UploadService {
                 .title(contentReqDto.getTitle())
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
+                .heartCnt(0L)
                 .build();
         contentRepository.save(content);
 
@@ -175,6 +180,7 @@ public class UploadService {
                 .title(contentReqDto.getTitle())
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
+                .heartCnt(0L)
                 .build();
         contentRepository.save(content);
 
@@ -194,11 +200,10 @@ public class UploadService {
 
         String httpUrl = s3Client.getUrl(bucket, dir + s3FileName).toString();
         //https://myspartabucket12.s3.ap-northeast-2.amazonaws.com/52af4048-2405-4531-b13d-c6a515896759-beach.jpg",
-        String temp = httpUrl.substring(httpUrl.lastIndexOf("/")+1);
-        String answer = "https://s3."+region+".amazonaws.com/"+bucket+"/"+temp;
+        String temp = httpUrl.substring(httpUrl.lastIndexOf("/") + 1);
+        String answer = "https://s3." + region + ".amazonaws.com/" + bucket + "/" + temp;
         return answer;
     }
-
 
 
 }
