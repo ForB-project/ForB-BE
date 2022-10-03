@@ -63,6 +63,4 @@ public class UploadController {
                                             @RequestPart(value = "file") MultipartFile file) throws IOException {
         return uploadService.createSpringContent(springId, contentReqDto, file);
     }
-
-
 }

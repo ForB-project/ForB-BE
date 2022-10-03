@@ -2,6 +2,7 @@ package com.innovationcamp.finalprojectforb.service;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.*;
+import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Heart;
 import com.innovationcamp.finalprojectforb.model.Member;
@@ -12,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -33,16 +36,22 @@ public class RoadMapDetailService {
     private final HeartRepository heartRepository;
 
     //html detail
-    public ResponseDto<?> showRoadmapHtml(Long htmlId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapHtml(Long htmlId,
+                                          int page,
+                                          int size,
+                                          String sortBy,
+                                          HttpServletRequest request) {
         Html html = isPresentHtml(htmlId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findByHtmlIdOrderByHeartCntDesc(htmlId, pageable);
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findByHtmlId(htmlId, pageable);
 
         List<HtmlResponseDto> htmlDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -61,16 +70,22 @@ public class RoadMapDetailService {
     }
 
     //css detail
-    public ResponseDto<?> showRoadmapCss(Long cssId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapCss(Long cssId,
+                                         int page,
+                                         int size,
+                                         String sortBy,
+                                         HttpServletRequest request) {
         Css css = isPresentCss(cssId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findByCssIdOrderByHeartCntDesc(cssId, pageable);
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findByCssId(cssId, pageable);
 
         List<CssResponseDto> cssResponseDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -89,16 +104,22 @@ public class RoadMapDetailService {
     }
 
     //js detail
-    public ResponseDto<?> showRoadmapJs(Long jsId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapJs(Long jsId,
+                                        int page,
+                                        int size,
+                                        String sortBy,
+                                        HttpServletRequest request) {
         Js js = isPresentJs(jsId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findByJsIdOrderByHeartCntDesc(jsId, pageable);
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findByJsId(jsId, pageable);
 
         List<JsResponseDto> jsResponseDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -117,16 +138,22 @@ public class RoadMapDetailService {
     }
 
     //react detail
-    public ResponseDto<?> showRoadmapReact(Long reactId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapReact(Long reactId,
+                                           int page,
+                                           int size,
+                                           String sortBy,
+                                           HttpServletRequest request) {
         React react = isPresentReact(reactId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findByReactIdOrderByHeartCntDesc(reactId, pageable);
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findByReactId(reactId, pageable);
 
         List<ReactResponseDto> reactResponseDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -145,15 +172,22 @@ public class RoadMapDetailService {
     }
 
     //java detail
-    public ResponseDto<?> showRoadmapJava(Long javaId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapJava(Long javaId,
+                                          int page,
+                                          int size,
+                                          String sortBy,
+                                          HttpServletRequest request) {
         Java java = isPresentJava(javaId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findByJavaIdOrderByHeartCntDesc(javaId, pageable);
+
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findByJavaId(javaId, pageable);
 
         List<JavaResponseDto> javaResponseDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -173,16 +207,22 @@ public class RoadMapDetailService {
 
 
     //spring detail
-    public ResponseDto<?> showRoadmapSpring(Long springId, int page, int size, HttpServletRequest request) {
+    public ResponseDto<?> showRoadmapSpring(Long springId,
+                                            int page,
+                                            int size,
+                                            String sortBy,
+                                            HttpServletRequest request) {
         Spring spring = isPresentSpring(springId);
         Member member = validateMember(request);
 
         if (member == null) {
-            throw new NullPointerException("Token이 유효하지 않습니다.");
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Content> contentList = contentRepository.findBySpringIdOrderByHeartCntDesc(springId, pageable);
+        Sort sort = Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Content> contentList = contentRepository.findBySpringId(springId, pageable);
 
         List<SpringResponseDto> springResponseDtoList = new ArrayList<>();
         List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
@@ -239,17 +279,17 @@ public class RoadMapDetailService {
         return tokenProvider.getMemberFromAuthentication();
     }
 
-    private boolean isHeartcheck(Member member, Content content) {
+    private boolean isHeartCheck(Member member, Content content) {
         List<Heart> heartList = heartRepository.findByMemberIdAndContentId(member.getId(), content.getId());
-        boolean heartcheck = false;
+        boolean heartCheck = false;
         if (!heartList.isEmpty()) {
-            heartcheck = true;
+            heartCheck = true;
         }
-        return heartcheck;
+        return heartCheck;
     }
     private void makeContentList(Member member, Page<Content> contentList, List<ContentResponseDto> contentResponseDtoList) {
         for (Content content : contentList) {
-            boolean heartcheck = isHeartcheck(member, content);
+            boolean heartCheck = isHeartCheck(member, content);
             contentResponseDtoList.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
@@ -258,7 +298,7 @@ public class RoadMapDetailService {
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
                             .heartCnt(content.getHeartCnt())
-                            .heartCheck(heartcheck)
+                            .heartCheck(heartCheck)
                             .build());
         }
     }

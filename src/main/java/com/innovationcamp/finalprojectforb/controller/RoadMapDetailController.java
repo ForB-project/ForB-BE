@@ -22,9 +22,10 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapHtml(@PathVariable Long htmlId,
                                           @RequestParam("page") int page,
                                           @RequestParam("size") int size,
+                                          @RequestParam("sortBy") String sortBy,
                                           HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapHtml(htmlId,page,size,request);
+        return roadMapDetailServercie.showRoadmapHtml(htmlId,page,size,sortBy,request);
     }
 
     //css detail
@@ -32,9 +33,10 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapCss(@PathVariable Long cssId,
                                          @RequestParam("page") int page,
                                          @RequestParam("size") int size,
+                                         @RequestParam("sortBy") String sortBy,
                                          HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapCss(cssId,page,size,request);
+        return roadMapDetailServercie.showRoadmapCss(cssId,page,size,sortBy,request);
     }
 
     //js detail
@@ -42,9 +44,10 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapJs(@PathVariable Long jsId,
                                         @RequestParam("page") int page,
                                         @RequestParam("size") int size,
+                                        @RequestParam("sortBy") String sortBy,
                                         HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapJs(jsId,page,size,request);
+        return roadMapDetailServercie.showRoadmapJs(jsId,page,size,sortBy,request);
     }
 
     //react detail
@@ -52,9 +55,10 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapReact(@PathVariable Long reactId,
                                            @RequestParam("page") int page,
                                            @RequestParam("size") int size,
+                                           @RequestParam("sortBy") String sortBy,
                                            HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapReact(reactId,page,size,request);
+        return roadMapDetailServercie.showRoadmapReact(reactId,page,size,sortBy,request);
     }
 
     //java detail
@@ -62,9 +66,10 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapJava(@PathVariable Long javaId,
                                           @RequestParam("page") int page,
                                           @RequestParam("size") int size,
+                                          @RequestParam("sortBy") String sortBy,
                                           HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapJava(javaId,page,size,request);
+        return roadMapDetailServercie.showRoadmapJava(javaId,page,size,sortBy,request);
     }
 
     //spring detail
@@ -72,8 +77,9 @@ public class RoadMapDetailController {
     public ResponseDto<?> showRoadmapSpring(@PathVariable Long springId,
                                             @RequestParam("page") int page,
                                             @RequestParam("size") int size,
+                                            @RequestParam("sortBy") String sortBy,
                                             HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapSpring(springId,page,size,request);
+        return roadMapDetailServercie.showRoadmapSpring(springId,page,size,sortBy,request);
     }
 }
