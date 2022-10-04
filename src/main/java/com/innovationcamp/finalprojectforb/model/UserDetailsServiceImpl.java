@@ -1,6 +1,5 @@
-package com.innovationcamp.finalprojectforb.jwt;
+package com.innovationcamp.finalprojectforb.model;
 
-import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

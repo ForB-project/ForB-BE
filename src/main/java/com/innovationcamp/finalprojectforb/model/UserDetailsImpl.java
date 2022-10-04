@@ -1,7 +1,6 @@
-package com.innovationcamp.finalprojectforb.jwt;
+package com.innovationcamp.finalprojectforb.model;
 
 import com.innovationcamp.finalprojectforb.enums.Authority;
-import com.innovationcamp.finalprojectforb.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

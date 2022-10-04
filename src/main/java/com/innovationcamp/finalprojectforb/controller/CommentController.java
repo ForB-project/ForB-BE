@@ -4,7 +4,7 @@ import com.innovationcamp.finalprojectforb.dto.CommentRequestDto;
 import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
+import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.service.CommentService;
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,7 @@ import com.innovationcamp.finalprojectforb.dto.MemberResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.jwt.TokenDto;
+import com.innovationcamp.finalprojectforb.dto.TokenDto;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;

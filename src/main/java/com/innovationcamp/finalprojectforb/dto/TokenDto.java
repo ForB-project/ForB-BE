@@ -1,4 +1,4 @@
-package com.innovationcamp.finalprojectforb.jwt;
+package com.innovationcamp.finalprojectforb.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
