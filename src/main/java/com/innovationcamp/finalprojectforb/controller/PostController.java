@@ -2,7 +2,7 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.*;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
+import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.service.PostService;
 import lombok.RequiredArgsConstructor;

@@ -5,15 +5,12 @@ import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.exception.CustomException;
-import com.innovationcamp.finalprojectforb.jwt.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Comment;
 import com.innovationcamp.finalprojectforb.model.Member;
-import com.innovationcamp.finalprojectforb.model.MyRoadmap;
 import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.repository.CommentRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
