@@ -2,11 +2,17 @@ package com.innovationcamp.finalprojectforb.service;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.*;
+import com.innovationcamp.finalprojectforb.enums.ErrorCode;
+import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Heart;
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.roadmap.*;
+import com.innovationcamp.finalprojectforb.repository.HeartRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class RoadMapService {
+    private final TokenProvider tokenProvider;
     private final HtmlRepository htmlRepository;
     private final CssRepository cssRepository;
 
@@ -27,6 +34,7 @@ public class RoadMapService {
     private final TitleRepository titleRepository;
 
     private final ContentRepository contentRepository;
+    private final HeartRepository heartRepository;
 
     //타이틀 나타내기
     public ResponseDto<?> showTitle() {
@@ -139,21 +147,34 @@ public class RoadMapService {
 
 
     //타이틀명으로 검색하기
-    public ResponseDto<?> searchContents(String keyword) {
+    public ResponseDto<?> searchContents(String keyword, HttpServletRequest request) {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+
         List<Content> contentList = contentRepository.findByTitleContaining(keyword);
-        List<ContentResponseDto> contentResponseDtots = new ArrayList<>();
+        List<ContentResponseDto> contentResponseDtos = new ArrayList<>();
+
 
         for (Content content : contentList) {
-            contentResponseDtots.add(
+            List<Heart> heartList = heartRepository.findByMemberIdAndContentId(member.getId(),content.getId());
+            boolean heartCheck = false;
+            if (!heartList.isEmpty()) {
+                heartCheck = true;
+            }
+            contentResponseDtos.add(
                     ContentResponseDto.builder()
                             .id(content.getId())
                             .title(content.getTitle())
                             .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
                             .desc(content.getDescription())
+                            .heartCheck(heartCheck)
+                            .heartCnt(content.getHeartCnt())
                             .build());
         }
-        return ResponseDto.success(contentResponseDtots);
+        return ResponseDto.success(contentResponseDtos);
     }
 
 
@@ -162,4 +183,10 @@ public class RoadMapService {
         return optionalTitle.orElse(null);
     }
 
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
 }

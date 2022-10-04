@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +34,8 @@ public class RoadMapController {
 
     //타이틀명으로 검색하기
     @GetMapping("/api/roadmap/search")
-    public ResponseDto<?> searchContent(@RequestParam(value = "keyword") String keyword){
-        return roadMapServercie.searchContents(keyword);
+    public ResponseDto<?> searchContent(@RequestParam(value = "keyword") String keyword,
+                                        HttpServletRequest request){
+        return roadMapServercie.searchContents(keyword, request);
     }
 }
