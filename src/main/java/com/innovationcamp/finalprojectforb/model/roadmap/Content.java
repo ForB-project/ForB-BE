@@ -2,6 +2,7 @@ package com.innovationcamp.finalprojectforb.model.roadmap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.innovationcamp.finalprojectforb.model.Heart;
+import com.innovationcamp.finalprojectforb.model.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,6 +37,10 @@ public class Content {
     @JsonIgnore// Restcontroller에서  Heart엔티티를 JSON으로 반환하는 과정에서 recursion 에러 발생 => serialize(직렬화) 과정에서 무한재귀 발생 해결방안
     @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Heart> heart;
+
+    @JoinColumn(name = "member_id", nullable = true)
+    @ManyToOne
+    private Member member;
 
     @JoinColumn(name = "html_id", nullable = true)
     @ManyToOne(fetch = FetchType.EAGER)
