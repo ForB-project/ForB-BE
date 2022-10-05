@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -54,6 +56,20 @@ public class MyRoadMapService {
         return ResponseDto.success(myRoadMapResDtoList);
     }
 
+    public ResponseDto<?> deleteMyRoadMap(HttpServletRequest request,
+                                          Long contentId) {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+        Content content = isPresentContent(contentId);
+        if (!Objects.equals(content.getMember().getId(), member.getId())) {
+            return new ResponseDto<>(null,ErrorCode.NOT_SAME_MEMBER);
+        }
+        contentRepository.delete(content);
+        return ResponseDto.success("삭제되었습니다.");
+    }
+
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return null;
@@ -85,4 +101,9 @@ public class MyRoadMapService {
                             .build());
         }
     }
+    public Content isPresentContent(Long id) {
+        Optional<Content> optionalContent = contentRepository.findById(id);
+        return optionalContent.orElse(null);
+    }
+
 }
