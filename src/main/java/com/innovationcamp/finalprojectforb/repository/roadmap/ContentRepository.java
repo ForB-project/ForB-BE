@@ -22,5 +22,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     List<Content> findByTitleContaining(String keyword);
 
-    Page<Content> findByMemberId(Long memberId, Pageable pageable);
+    Page<Content> findByMemberIdOrderByIdDesc(Long memberId,Pageable pageable);
+
+    Page<Content> findByIdOrderByHeartCntDesc(Long contentId, Pageable pageable);
 }

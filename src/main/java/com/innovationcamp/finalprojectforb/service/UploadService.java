@@ -5,6 +5,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.ContentReqDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.ContentResponseDto;
+import com.innovationcamp.finalprojectforb.enums.ErrorCode;
+import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.roadmap.*;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -27,14 +31,22 @@ public class UploadService {
     private final AmazonS3Client s3Client;
 
     private final ContentRepository contentRepository;
-
+    private final TokenProvider tokenProvider;
     //html upload
     public ResponseDto<?> createHtmlContent(Long htmlId,
                                             ContentReqDto contentReqDto,
-                                            MultipartFile file) throws IOException {
+                                            MultipartFile file,
+                                            HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         Html htmlIdSet = new Html();
         htmlIdSet.getId(htmlId);
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
         //프론트에서 null값 파일 줄 때 => 파일을 받긴 하되 blob으로 끝나는게 null값
         if (image.endsWith("blob")) {
             image = null;
@@ -47,6 +59,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
@@ -205,5 +218,10 @@ public class UploadService {
         return answer;
     }
 
-
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
 }

@@ -47,4 +47,9 @@ public class Member extends Timestamped {
         this.provider = provider;
     }
 
+    public Long getId(Long memberId) {
+        this.id = memberId;
+        return memberId;
+    }
+
 }

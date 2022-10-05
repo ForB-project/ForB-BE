@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -20,8 +21,9 @@ public class UploadController {
     @PutMapping("/api/roadmap/html/{htmlId}")
     public ResponseDto<?> createHtmlContent(@PathVariable Long htmlId,
                                             @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
-                                            @RequestPart(value = "file") MultipartFile file) throws IOException {
-        return uploadService.createHtmlContent(htmlId, contentReqDto, file);
+                                            @RequestPart(value = "file") MultipartFile file,
+                                            HttpServletRequest request) throws IOException {
+        return uploadService.createHtmlContent(htmlId, contentReqDto, file, request);
     }
 
     //css upload

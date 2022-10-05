@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,22 +27,32 @@ public class MyRoadMapService {
 
     private final HeartRepository heartRepository;
 
-    public ResponseDto<List<MyRoadMapResDto>> showMyRoadMap(HttpServletRequest request, int page, int size, String sortBy) {
+    public ResponseDto<List<MyRoadMapResDto>> showMyRoadMap(HttpServletRequest request, Long pathId, int page, int size) {
 
         Member member = validateMember(request);
         if (member == null) {
-            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        Sort sort = Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Content> contentList = contentRepository.findByMemberId(member.getId(), pageable);
-
         List<MyRoadMapResDto> myRoadMapResDtoList = new ArrayList<>();
-        makeContentList(member, contentList, myRoadMapResDtoList);
+
+        if (pathId == 1) { //본인이 업로드한 것
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Content> contentList = contentRepository.findByMemberIdOrderByIdDesc(member.getId(), pageable);
+
+            makeContentList(member, myRoadMapResDtoList, contentList);
+
+        } else if (pathId == 2) { //본인이 좋아요한 것
+            List<Heart> heartList = heartRepository.findByMemberId(member.getId());
+            Pageable pageable = PageRequest.of(page, size);
+            for (Heart heart : heartList) {
+                Page<Content> contentList = contentRepository.findByIdOrderByHeartCntDesc(heart.getContent().getId(), pageable);
+                makeContentList(member, myRoadMapResDtoList, contentList);
+            }
+        }
+
         return ResponseDto.success(myRoadMapResDtoList);
     }
-
 
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
@@ -52,8 +61,8 @@ public class MyRoadMapService {
         return tokenProvider.getMemberFromAuthentication();
     }
 
-    private boolean isHeartCheck(Member member) {
-        List<Heart> heartList = heartRepository.findByMemberId(member.getId());
+    private boolean isHeartCheck(Member member, Content content) {
+        List<Heart> heartList = heartRepository.findByMemberIdAndContentId(member.getId(), content.getId());
         boolean heartCheck = false;
         if (!heartList.isEmpty()) {
             heartCheck = true;
@@ -61,15 +70,15 @@ public class MyRoadMapService {
         return heartCheck;
     }
 
-    private void makeContentList(Member member, Page<Content> contentList, List<MyRoadMapResDto> myRoadMapResDtoList) {
+    private void makeContentList(Member member, List<MyRoadMapResDto> myRoadMapResDtoList, Page<Content> contentList) {
         for (Content content : contentList) {
-            boolean heartCheck = isHeartCheck(member);
+            boolean heartCheck = isHeartCheck(member, content);
             myRoadMapResDtoList.add(
                     MyRoadMapResDto.builder()
                             .id(content.getId())
                             .title(content.getTitle())
-                            .link(content.getContentLink())
                             .thumbnail(content.getThumbnail())
+                            .link(content.getContentLink())
                             .desc(content.getDescription())
                             .heartCnt(content.getHeartCnt())
                             .heartCheck(heartCheck)
