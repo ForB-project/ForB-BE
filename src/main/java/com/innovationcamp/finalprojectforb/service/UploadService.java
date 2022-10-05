@@ -76,7 +76,12 @@ public class UploadService {
     //css upload
     public ResponseDto<?> createCssContent(Long cssId,
                                            ContentReqDto contentReqDto,
-                                           MultipartFile file) throws IOException {
+                                           MultipartFile file, HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         Css cssIdSet = new Css();
         cssIdSet.getId(cssId);
@@ -101,7 +106,12 @@ public class UploadService {
     //js upload
     public ResponseDto<?> createJsContent(Long jsId,
                                           ContentReqDto contentReqDto,
-                                          MultipartFile file) throws IOException {
+                                          MultipartFile file, HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         Js jsIdSet = new Js();
         jsIdSet.getId(jsId);
@@ -127,7 +137,12 @@ public class UploadService {
     //react upload
     public ResponseDto<?> createReactContent(Long reactId,
                                              ContentReqDto contentReqDto,
-                                             MultipartFile file) throws IOException {
+                                             MultipartFile file, HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         React reactIdSet = new React();
         reactIdSet.getId(reactId);
@@ -152,7 +167,12 @@ public class UploadService {
     //java upload
     public ResponseDto<?> createJavaContent(Long javaId,
                                             ContentReqDto contentReqDto,
-                                            MultipartFile file) throws IOException {
+                                            MultipartFile file, HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         Java javaIdSet = new Java();
         javaIdSet.getId(javaId);
@@ -178,7 +198,12 @@ public class UploadService {
     //spring upload
     public ResponseDto<?> createSpringContent(Long springId,
                                               ContentReqDto contentReqDto,
-                                              MultipartFile file) throws IOException {
+                                              MultipartFile file, HttpServletRequest request) throws IOException {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+
         String image = getImage(file);
         Spring springIdSet = new Spring();
         springIdSet.getId(springId);
