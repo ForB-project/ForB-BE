@@ -1,13 +1,16 @@
 package com.innovationcamp.finalprojectforb.service;
 
 import com.innovationcamp.finalprojectforb.dto.MyRoadMapResDto;
+import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Heart;
 import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.model.roadmap.Content;
 import com.innovationcamp.finalprojectforb.repository.HeartRepository;
+import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +29,7 @@ import java.util.Optional;
 public class MyRoadMapService {
     private final TokenProvider tokenProvider;
     private final ContentRepository contentRepository;
-
+    private final PostRepository postRepository;
     private final HeartRepository heartRepository;
 
     public ResponseDto<List<MyRoadMapResDto>> showMyRoadMap(HttpServletRequest request, Long pathId, int page, int size) {
@@ -64,10 +67,31 @@ public class MyRoadMapService {
         }
         Content content = isPresentContent(contentId);
         if (!Objects.equals(content.getMember().getId(), member.getId())) {
-            return new ResponseDto<>(null,ErrorCode.NOT_SAME_MEMBER);
+            return new ResponseDto<>(null, ErrorCode.NOT_SAME_MEMBER);
         }
         contentRepository.delete(content);
         return ResponseDto.success("삭제되었습니다.");
+    }
+
+    public ResponseDto<?> showMyPost(HttpServletRequest request, int page, int size) {
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage = postRepository.findByMemberId(member.getId(), pageable);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : postPage) {
+            postResponseDtos.add(
+                    PostResponseDto.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .nickname(post.getMember().getNickname())
+                            .content(post.getContent())
+                            .createdAt(post.getCreatedAt())
+                            .build());
+        }
+        return ResponseDto.success(postResponseDtos);
     }
 
     public Member validateMember(HttpServletRequest request) {
@@ -101,9 +125,14 @@ public class MyRoadMapService {
                             .build());
         }
     }
+
     public Content isPresentContent(Long id) {
         Optional<Content> optionalContent = contentRepository.findById(id);
         return optionalContent.orElse(null);
     }
 
+    public Post isPresentPost(Long id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        return optionalPost.orElse(null);
+    }
 }

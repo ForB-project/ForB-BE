@@ -28,4 +28,12 @@ public class MyRoadMapController {
     public ResponseDto<?> deleteMyRoadMap(HttpServletRequest request,@PathVariable Long contentId){
         return myRoadMapService.deleteMyRoadMap(request,contentId);
     }
+
+    @GetMapping("/api/myroadmap/post")
+    public ResponseDto<?> showMyPost(HttpServletRequest request,
+                                     @RequestParam("page") int page,
+                                     @RequestParam("size") int size){
+        page = page -1;
+        return myRoadMapService.showMyPost(request, page, size);
+    }
 }
