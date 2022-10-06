@@ -22,7 +22,7 @@ public class HeartController {
         return heartService.heartContent(contentId,request);
     }
 
-    @PostMapping("/api/auth/post/Like/{postId}")
+    @PostMapping("/api/auth/post/like/{postId}")
     public ResponseDto<?> LikePost(@PathVariable Long postId, HttpServletRequest request) {
         return heartService.LikePost(postId,request);
     }
