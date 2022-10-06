@@ -4,9 +4,13 @@ import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Heart;
+import com.innovationcamp.finalprojectforb.model.LikePost;
 import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.model.roadmap.Content;
 import com.innovationcamp.finalprojectforb.repository.HeartRepository;
+import com.innovationcamp.finalprojectforb.repository.LikePostRepository;
+import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +31,12 @@ public class HeartService {
     private final ContentRepository contentRepository;
     private final HeartRepository heartRepository;
     private final TokenProvider tokenProvider;
+    private final PostRepository postRepository;
+    private final LikePostRepository likePostRepository;
 
     // 좋아요 + 좋아요 해제 둘다 가능
     @Transactional
-    public ResponseDto<?> heart(Long contentId, HttpServletRequest request) throws IOException {
+    public ResponseDto<?> heartContent(Long contentId, HttpServletRequest request) throws IOException {
 
 
         if (null == request.getHeader("Authorization")) {
@@ -76,6 +82,40 @@ public class HeartService {
     }
 
     @Transactional
+    public ResponseDto<?> LikePost(Long postId, HttpServletRequest request) {
+
+        Member member = validateMember(request);
+        if (null == member) {
+            return new ResponseDto<>(null,ErrorCode.BAD_TOKEN_REQUEST);
+        }
+
+        Post post = isPresentPost(postId);
+
+        LikePost checkLike = likePostRepository.findByPostIdAndMemberId(post.getId(), member.getId());
+        if (checkLike == null) {
+            // like 등록
+            LikePost likePost = LikePost.builder()
+                    .member(member)
+                    .post(post)
+                    .build();
+            likePostRepository.save(likePost);
+        } else {
+            //like 취소
+            likePostRepository.deleteById(checkLike.getId());
+        }
+
+        // 해당 게시물 likes 업데이트
+        Long likes = likePostRepository.countAllByPostId(post.getId());
+        post.updateLikes(likes);
+
+        if (checkLike == null) {
+            return ResponseDto.success("like post success");
+        } else {
+            return ResponseDto.success("like post cancel");
+        }
+    }
+
+    @Transactional
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return null;
@@ -86,5 +126,10 @@ public class HeartService {
     public Content isPresentContent(Long contentId) {
         Optional<Content> optionalContent = contentRepository.findById(contentId);
         return optionalContent.orElse(null);
+    }
+
+    public Post isPresentPost(Long postId) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        return optionalPost.orElse(null);
     }
 }

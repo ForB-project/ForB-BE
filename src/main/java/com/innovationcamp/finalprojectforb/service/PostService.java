@@ -1,6 +1,9 @@
 package com.innovationcamp.finalprojectforb.service;
 
-import com.innovationcamp.finalprojectforb.dto.*;
+import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
+import com.innovationcamp.finalprojectforb.dto.PostRequestDto;
+import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
+import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.exception.CustomException;
 import com.innovationcamp.finalprojectforb.model.Comment;
@@ -54,6 +57,7 @@ public class PostService {
                                 .content(post.getContent())
                                 .createdAt(post.getCreatedAt())
                                 .commentList(commentResponseDtoList)
+                                .likes(post.getLikes())
                                 .build());
     }
 
@@ -67,6 +71,7 @@ public class PostService {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .createdAt(post.getCreatedAt())
+                        .likes(post.getLikes())
                         .build());
     }
 
@@ -84,6 +89,7 @@ public class PostService {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .createdAt(post.getCreatedAt())
+                        .likes(post.getLikes())
                         .build());
     }
 
