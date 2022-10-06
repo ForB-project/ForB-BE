@@ -45,8 +45,10 @@ public class UploadService {
         String image = getImage(file);
         Html htmlIdSet = new Html();
         htmlIdSet.getId(htmlId);
+
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
+
         //프론트에서 null값 파일 줄 때 => 파일을 받긴 하되 blob으로 끝나는게 null값
         if (image.endsWith("blob")) {
             image = null;
@@ -85,6 +87,10 @@ public class UploadService {
         String image = getImage(file);
         Css cssIdSet = new Css();
         cssIdSet.getId(cssId);
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
         if (image.endsWith("blob")) {
             image = null;
         }
@@ -97,6 +103,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
@@ -115,6 +122,10 @@ public class UploadService {
         String image = getImage(file);
         Js jsIdSet = new Js();
         jsIdSet.getId(jsId);
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
         if (image.endsWith("blob")) {
             image = null;
         }
@@ -127,6 +138,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
@@ -146,6 +158,10 @@ public class UploadService {
         String image = getImage(file);
         React reactIdSet = new React();
         reactIdSet.getId(reactId);
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
         if (image.endsWith("blob")) {
             image = null;
         }
@@ -158,6 +174,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
@@ -176,6 +193,10 @@ public class UploadService {
         String image = getImage(file);
         Java javaIdSet = new Java();
         javaIdSet.getId(javaId);
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
         if (image.endsWith("blob")) {
             image = null;
         }
@@ -188,6 +209,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
@@ -207,6 +229,10 @@ public class UploadService {
         String image = getImage(file);
         Spring springIdSet = new Spring();
         springIdSet.getId(springId);
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
         if (image.endsWith("blob")) {
             image = null;
         }
@@ -219,6 +245,7 @@ public class UploadService {
                 .contentLink(contentReqDto.getLink())
                 .description(contentReqDto.getDesc())
                 .heartCnt(0L)
+                .member(memberIdSet)
                 .build();
         contentRepository.save(content);
 
