@@ -1,6 +1,9 @@
 package com.innovationcamp.finalprojectforb.service;
 
-import com.innovationcamp.finalprojectforb.dto.*;
+import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
+import com.innovationcamp.finalprojectforb.dto.PostRequestDto;
+import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
+import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.exception.CustomException;
 import com.innovationcamp.finalprojectforb.model.Comment;
@@ -8,6 +11,8 @@ import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +27,9 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
 
-    public List<PostResponseDto> getAllPost() {
-        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+    public List<PostResponseDto> getAllPost(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc(pageable);
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         for (Post post : postList) {
@@ -54,6 +60,7 @@ public class PostService {
                                 .content(post.getContent())
                                 .createdAt(post.getCreatedAt())
                                 .commentList(commentResponseDtoList)
+                                .likes(post.getLikes())
                                 .build());
     }
 
@@ -67,6 +74,7 @@ public class PostService {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .createdAt(post.getCreatedAt())
+                        .likes(post.getLikes())
                         .build());
     }
 
@@ -84,7 +92,18 @@ public class PostService {
                         .title(post.getTitle())
                         .content(post.getContent())
                         .createdAt(post.getCreatedAt())
+                        .likes(post.getLikes())
                         .build());
+    }
+
+    public List<PostResponseDto> searchPost(String keyword) {
+        List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        for (Post post : postList) {
+            postResponseDtoList.add(new PostResponseDto(post));
+        }
+        return postResponseDtoList;
     }
 
     public void deletePost(Long postId, Member member) {
