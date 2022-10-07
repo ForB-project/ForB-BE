@@ -21,10 +21,11 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/api/post")
-    public ResponseDto<List<PostResponseDto>> getAllPost() {
+    public ResponseDto<List<PostResponseDto>> getAllPost(@RequestParam("page") int page, @RequestParam("size") int size) {
         List<PostResponseDto> postResponseDtoList;
+        page = page -1;
         try {
-            postResponseDtoList = postService.getAllPost();
+            postResponseDtoList = postService.getAllPost(page, size);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
