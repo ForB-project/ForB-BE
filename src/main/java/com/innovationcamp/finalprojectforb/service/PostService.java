@@ -96,6 +96,16 @@ public class PostService {
                         .build());
     }
 
+    public List<PostResponseDto> searchPost(String keyword) {
+        List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        for (Post post : postList) {
+            postResponseDtoList.add(new PostResponseDto(post));
+        }
+        return postResponseDtoList;
+    }
+
     public void deletePost(Long postId, Member member) {
         Post post = isPresentPost(postId);
         if (!Objects.equals(post.getMember().getId(), member.getId())) {

@@ -1,14 +1,17 @@
 package com.innovationcamp.finalprojectforb.controller;
 
-import com.innovationcamp.finalprojectforb.dto.*;
+import com.innovationcamp.finalprojectforb.dto.PostRequestDto;
+import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
+import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
@@ -50,7 +53,8 @@ public class PostController {
     }
 
     @PostMapping("/api/auth/post")
-    public ResponseDto<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PostRequestDto requestDto) {
+    public ResponseDto<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   @RequestBody PostRequestDto requestDto) {
         try {
             Member member = userDetails.getMember();
             return postService.createPost(requestDto, member);
@@ -64,7 +68,8 @@ public class PostController {
     }
 
     @PutMapping("/api/auth/post/{postId}")
-    public ResponseDto<PostResponseDto> updatePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PostRequestDto requestDto) {
+    public ResponseDto<PostResponseDto> updatePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   @RequestBody PostRequestDto requestDto) {
         try {
             Member member = userDetails.getMember();
             return postService.updatePost(postId, requestDto, member);
@@ -91,4 +96,20 @@ public class PostController {
         }
         return new ResponseDto<>("delete success");
     }
+
+    @GetMapping("/api/post/search")
+    public ResponseDto<List<PostResponseDto>> searchLecture(@RequestParam(value = "keyword") String keyword) {
+        List<PostResponseDto> postResponseDtoList;
+        try {
+            postResponseDtoList = postService.searchPost(keyword);
+        }catch (EntityNotFoundException e){
+            log.error(e.getMessage());
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
+        }
+        return new ResponseDto<>(postResponseDtoList);
+    }
+
 }
