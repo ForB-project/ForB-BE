@@ -5,7 +5,6 @@ import com.innovationcamp.finalprojectforb.service.HeartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,13 @@ public class HeartController {
 
     // 좋아요 + 좋아요 해제 둘다 가능
     @PostMapping("/api/roadmap/heart/{contentId}")
-    public ResponseDto<?> heart(@PathVariable Long contentId, HttpServletRequest request) throws IOException {
-        return heartService.heart(contentId,request);
+    public ResponseDto<?> heartContent(@PathVariable Long contentId, HttpServletRequest request) throws IOException {
+        return heartService.heartContent(contentId,request);
     }
+
+    @PostMapping("/api/auth/post/like/{postId}")
+    public ResponseDto<?> LikePost(@PathVariable Long postId, HttpServletRequest request) {
+        return heartService.LikePost(postId,request);
+    }
+
 }
