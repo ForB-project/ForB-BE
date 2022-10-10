@@ -39,12 +39,7 @@ public class CommentService {
     @Transactional
     public ResponseDto<CommentResponseDto> createComment(Long postId, CommentRequestDto requestDto, Member member) {
         Post post = isPresentPost(postId);
-        Comment comment = Comment.builder()
-                .post(post)
-                .nickname(member.getNickname())
-                .content(requestDto.getContent())
-                .member(member)
-                .build();
+        Comment comment = new Comment(requestDto, member, post);
         commentRepository.save(comment);
         return ResponseDto.success(
                 CommentResponseDto.builder()
