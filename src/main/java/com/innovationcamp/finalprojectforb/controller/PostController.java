@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -54,10 +55,11 @@ public class PostController {
 
     @PostMapping("/api/auth/post")
     public ResponseDto<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                   @RequestBody PostRequestDto requestDto) {
+                                                   @RequestPart("data") PostRequestDto requestDto,
+                                                   @RequestPart(required = false)MultipartFile image) {
         try {
             Member member = userDetails.getMember();
-            return postService.createPost(requestDto, member);
+            return postService.createPost(requestDto, member, image);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);

@@ -15,7 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
+    private final S3Upload s3Upload;
 
     public List<PostResponseDto> getAllPost(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -64,20 +67,36 @@ public class PostService {
                                 .build());
     }
 
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member) {
-        Post post = new Post(requestDto, member);
+    @Transactional
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member, MultipartFile image) {
+        //변수 초기화
+        String postImg = null;
+
+        if (!image.isEmpty()) {
+            try {
+                postImg = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
+                System.out.println("postImg = " + postImg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Post post = new Post(requestDto, member,postImg);
         postRepository.save(post);
+
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .id(post.getId())
                         .nickname(member.getNickname())
                         .title(post.getTitle())
                         .content(post.getContent())
+                        .postImg(postImg)
                         .createdAt(post.getCreatedAt())
                         .likes(post.getLikes())
                         .build());
     }
 
+    @Transactional
     public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto requestDto, Member member) {
         Post post = isPresentPost(postId);
         if (!Objects.equals(post.getMember().getId(), member.getId())) {

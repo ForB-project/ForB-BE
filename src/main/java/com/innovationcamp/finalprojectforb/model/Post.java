@@ -27,6 +27,9 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String postImg;
+
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne
     private Member member;
@@ -40,9 +43,10 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy ="post", cascade = CascadeType.REMOVE)
     private List<LikePost> likePost;
 
-    public Post(PostRequestDto postRequestDto, Member member) {
+    public Post(PostRequestDto postRequestDto, Member member, String postImg) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.postImg = postImg;
         this.member = member;
     }
 
