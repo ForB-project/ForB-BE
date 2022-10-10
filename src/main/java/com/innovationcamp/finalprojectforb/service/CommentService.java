@@ -12,6 +12,7 @@ import com.innovationcamp.finalprojectforb.repository.CommentRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +36,12 @@ public class CommentService {
         return commentResponseDtoList;
     }
 
+    @Transactional
     public ResponseDto<CommentResponseDto> createComment(Long postId, CommentRequestDto requestDto, Member member) {
         Post post = isPresentPost(postId);
-        if (!Objects.equals(post.getMember().getId(), member.getId())) {
-            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
-        }
         Comment comment = Comment.builder()
                 .post(post)
+                .nickname(member.getNickname())
                 .content(requestDto.getContent())
                 .member(member)
                 .build();
@@ -56,6 +56,7 @@ public class CommentService {
                         .build());
     }
 
+    @Transactional
     public ResponseDto<CommentResponseDto>updateComment(Long commentId, CommentRequestDto requestDto, Member member) {
         Comment comment = isPresentComment(commentId);
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
