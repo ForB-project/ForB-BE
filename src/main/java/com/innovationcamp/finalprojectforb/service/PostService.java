@@ -15,7 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
+    private final S3Upload s3Upload;
 
     public List<PostResponseDto> getAllPost(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -58,32 +61,59 @@ public class PostService {
                                 .nickname(post.getMember().getNickname())
                                 .title(post.getTitle())
                                 .content(post.getContent())
+                                .postImage(post.getPostImage())
                                 .createdAt(post.getCreatedAt())
                                 .commentList(commentResponseDtoList)
                                 .likes(post.getLikes())
                                 .build());
     }
 
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member) {
-        Post post = new Post(requestDto, member);
+    @Transactional
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member, MultipartFile image) throws IOException {
+        //변수 초기화
+        String postImage = null;
+
+        if (image != null && !image.isEmpty()) {
+                postImage = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
+                System.out.println("postImg = " + postImage);
+        } else if (image == null) {
+            postImage = null;
+        }
+
+        Post post = new Post(requestDto, member,postImage);
         postRepository.save(post);
+
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .id(post.getId())
                         .nickname(member.getNickname())
                         .title(post.getTitle())
                         .content(post.getContent())
+                        .postImage(postImage)
                         .createdAt(post.getCreatedAt())
                         .likes(post.getLikes())
                         .build());
     }
 
-    public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto requestDto, Member member) {
+    @Transactional
+    public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto requestDto, Member member, MultipartFile image) throws IOException {
         Post post = isPresentPost(postId);
+        Post postFindById = postRepository.findPostById(postId);
+
         if (!Objects.equals(post.getMember().getId(), member.getId())) {
             throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
         }
-        post.update(requestDto);
+
+        String postImage = postFindById.getPostImage();
+
+        if (postImage != null && image.isEmpty()) {
+            postImage = post.getPostImage();
+        } else if (postImage != null && !image.isEmpty()) {
+            s3Upload.fileDelete(postImage);
+            postImage = s3Upload.uploadFiles(image, "images");
+        }
+
+        post.update(requestDto, postImage);
         post = postRepository.save(post);
         return ResponseDto.success(
                 PostResponseDto.builder()
@@ -91,6 +121,7 @@ public class PostService {
                         .nickname(member.getNickname())
                         .title(post.getTitle())
                         .content(post.getContent())
+                        .postImage(postImage)
                         .createdAt(post.getCreatedAt())
                         .likes(post.getLikes())
                         .build());
@@ -110,6 +141,12 @@ public class PostService {
         Post post = isPresentPost(postId);
         if (!Objects.equals(post.getMember().getId(), member.getId())) {
             throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+        }
+
+        String postImage = post.getPostImage();
+
+        if (postImage != null && postImage.isEmpty()) {
+            s3Upload.fileDelete(postImage);
         }
         postRepository.delete(post);
     }
