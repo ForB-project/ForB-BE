@@ -61,6 +61,7 @@ public class PostService {
                                 .nickname(post.getMember().getNickname())
                                 .title(post.getTitle())
                                 .content(post.getContent())
+                                .postImage(post.getPostImage())
                                 .createdAt(post.getCreatedAt())
                                 .commentList(commentResponseDtoList)
                                 .likes(post.getLikes())
