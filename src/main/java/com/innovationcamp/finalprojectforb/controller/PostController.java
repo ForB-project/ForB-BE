@@ -56,7 +56,7 @@ public class PostController {
     @PostMapping("/api/auth/post")
     public ResponseDto<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                    @RequestPart("data") PostRequestDto requestDto,
-                                                   @RequestPart(required = false)MultipartFile image) {
+                                                   @RequestPart(required = false) MultipartFile image) {
         try {
             Member member = userDetails.getMember();
             return postService.createPost(requestDto, member, image);
@@ -70,11 +70,13 @@ public class PostController {
     }
 
     @PutMapping("/api/auth/post/{postId}")
-    public ResponseDto<PostResponseDto> updatePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                   @RequestBody PostRequestDto requestDto) {
+    public ResponseDto<PostResponseDto> updatePost(@PathVariable Long postId,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   @RequestPart("data") PostRequestDto requestDto,
+                                                   @RequestPart(required = false) MultipartFile image) {
         try {
             Member member = userDetails.getMember();
-            return postService.updatePost(postId, requestDto, member);
+            return postService.updatePost(postId, requestDto, member, image);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);

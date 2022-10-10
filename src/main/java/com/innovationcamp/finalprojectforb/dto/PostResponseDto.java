@@ -18,7 +18,7 @@ public class PostResponseDto {
     private String nickname;
     private String title;
     private String content;
-    private String postImg;
+    private String postImage;
     private Long likes;
     private LocalDateTime createdAt;
     private List<CommentResponseDto> commentList;
@@ -29,7 +29,7 @@ public class PostResponseDto {
         this.nickname = post.getMember().getNickname();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.postImg = post.getPostImg();
+        this.postImage = post.getPostImage();
         this.likes = post.getLikes();
         this.createdAt = post.getCreatedAt();
     }
