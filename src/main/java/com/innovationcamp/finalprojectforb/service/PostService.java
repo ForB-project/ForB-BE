@@ -163,7 +163,7 @@ public class PostService {
 
         String postImage = post.getPostImage();
 
-        if (postImage != null && !postImage.isEmpty()) {
+        if (postImage != null) {
             s3Upload.fileDelete(postImage);
         }
         postRepository.delete(post);
