@@ -11,6 +11,7 @@ import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -105,12 +107,29 @@ public class PostService {
 
         String postImage = postFindById.getPostImage();
 
-        if (postImage != null && image.isEmpty()) {
-            postImage = post.getPostImage();
-        } else if (postImage != null && !image.isEmpty()) {
-            s3Upload.fileDelete(postImage);
-            postImage = s3Upload.uploadFiles(image, "images");
+        if (postImage != null) {
+            if (image == null || image.isEmpty()) {
+                postImage = post.getPostImage();
+            } else if (!image.isEmpty()) {
+                try {
+                    s3Upload.fileDelete(postImage);
+                    postImage = s3Upload.uploadFiles(image, "images");
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        } else {
+            if (image == null || image.isEmpty()) {
+                postImage = null;
+            } else if (!image.isEmpty()) {
+                try {
+                    postImage = s3Upload.uploadFiles(image, "images");
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
         }
+
 
         post.update(requestDto, postImage);
         post = postRepository.save(post);
