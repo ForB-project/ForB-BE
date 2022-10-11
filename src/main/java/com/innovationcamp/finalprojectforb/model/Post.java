@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Builder
@@ -25,6 +26,7 @@ public class Post extends Timestamped{
     private String title;
 
     @Column(nullable = false)
+    @Size(max=10000)
     private String content;
 
     @Column
