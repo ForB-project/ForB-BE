@@ -77,10 +77,10 @@ public class S3Upload {
     // S3 delete file
     public void fileDelete(String fileName) {
         log.info("file name : " + fileName); //url
-        log.info("File : " + fileName.substring(52));
+        log.info("File : " + fileName.substring(51));
 
         try {
-            amazonS3Client.deleteObject(this.bucket, fileName.substring(52));
+            amazonS3Client.deleteObject(this.bucket, fileName.substring(51));
 
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());

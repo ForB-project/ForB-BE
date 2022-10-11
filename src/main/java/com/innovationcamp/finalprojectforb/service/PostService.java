@@ -75,7 +75,6 @@ public class PostService {
 
         if (image != null && !image.isEmpty()) {
                 postImage = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
-                System.out.println("postImg = " + postImage);
         } else if (image == null) {
             postImage = null;
         }
@@ -145,7 +144,7 @@ public class PostService {
 
         String postImage = post.getPostImage();
 
-        if (postImage != null && postImage.isEmpty()) {
+        if (postImage != null && !postImage.isEmpty()) {
             s3Upload.fileDelete(postImage);
         }
         postRepository.delete(post);
