@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.innovationcamp.finalprojectforb.config.GoogleConfigUtils;
 import com.innovationcamp.finalprojectforb.dto.MemberRequestDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
+import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.service.GoogleMemberService;
 import com.innovationcamp.finalprojectforb.service.KakaoMemberService;
 import com.innovationcamp.finalprojectforb.service.MemberService;
@@ -68,6 +69,11 @@ public class MemberController {
     @PostMapping("/api/member/login")
     public ResponseDto<?> login(@RequestBody MemberRequestDto requestDto, HttpServletResponse response) {
         return memberService.loginMember(requestDto, response);
+    }
+
+    @PostMapping("api/member/stackType")
+    public ResponseDto<?> saveStackType(@RequestBody StackTypeRequestDto requestDto, HttpServletRequest request) {
+        return memberService.saveStackType(requestDto, request);
     }
 
 }
