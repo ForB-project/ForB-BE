@@ -1,5 +1,6 @@
 package com.innovationcamp.finalprojectforb.model;
 
+import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,9 +31,13 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String stackType;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column
     private String provider;
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
@@ -50,6 +55,10 @@ public class Member extends Timestamped {
     public Long getId(Long memberId) {
         this.id = memberId;
         return memberId;
+    }
+
+    public void saveStackType(StackTypeRequestDto requestDto) {
+        this.stackType = requestDto.getStackType();
     }
 
 }

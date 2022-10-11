@@ -1,11 +1,8 @@
 package com.innovationcamp.finalprojectforb.service;
 
-import com.innovationcamp.finalprojectforb.dto.MemberRequestDto;
-import com.innovationcamp.finalprojectforb.dto.MemberResponseDto;
-import com.innovationcamp.finalprojectforb.dto.ResponseDto;
+import com.innovationcamp.finalprojectforb.dto.*;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.dto.TokenDto;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
@@ -76,6 +73,28 @@ public class MemberService {
         }
 
         return tokenProvider.deleteRefreshToken(member);
+    }
+
+    public ResponseDto<?> saveStackType(StackTypeRequestDto requestDto, HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+        Member existMember = tokenProvider.getMemberFromAuthentication();
+        if (null == existMember) {
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        Member member = memberRepository.findMemberById(existMember.getId());
+        member.saveStackType(requestDto);
+
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .stackType(member.getStackType())
+                .authority(member.getAuthority()).build();
+
+        return new ResponseDto<>(responseDto);
+
     }
 
     @Transactional(readOnly = true)
