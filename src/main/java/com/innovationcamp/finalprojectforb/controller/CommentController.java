@@ -4,8 +4,8 @@ import com.innovationcamp.finalprojectforb.dto.CommentRequestDto;
 import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +36,25 @@ public class CommentController {
         }
         return new ResponseDto<>(commentResponseDtoList);
     }
+
+    @GetMapping("/api/comment/{postId}")
+    public ResponseDto<List<CommentResponseDto>> getComment(@PathVariable Long postId,
+                                                      @RequestParam("page") int page,
+                                                      @RequestParam("size") int size) {
+        List<CommentResponseDto> commentResponseDtoList;
+        page = page - 1;
+        try {
+            commentResponseDtoList = commentService.getComment(postId, page, size);
+        }catch (EntityNotFoundException e){
+            log.error(e.getMessage());
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
+        }
+        return new ResponseDto<>(commentResponseDtoList);
+    }
+
 
     @PostMapping("/api/auth/comment/{postId}")
     public ResponseDto<CommentResponseDto> createComment(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
