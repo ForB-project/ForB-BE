@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Builder
 @Getter
@@ -26,6 +27,7 @@ public class Comment extends Timestamped {
     private String nickname;
 
     @Column(nullable = false)
+    @Size(max=5000)
     private String content;
 
     @JoinColumn(name = "member_id", nullable = false)
