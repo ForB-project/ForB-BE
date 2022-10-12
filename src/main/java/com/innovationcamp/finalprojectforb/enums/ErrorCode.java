@@ -22,14 +22,14 @@ public enum ErrorCode {
     NOT_SAME_AUTHORITY("NOT_SAME_AUTHORITY", "권한이 일치하지 않습니다"),
     REQUIRE_AUTHORITY("REQUIRE_AUTHORITY", "필요한 권한이 없습니다."),
     INVALID_ERROR("INVALID_ERROR", "에러 발생"),
-    USED_EMAIL("USED_EMAIL", "이미 동일한 이메일 주소로 가입된 정보가 있습니다.");
-
-
+    USED_EMAIL("USED_EMAIL", "이미 동일한 이메일 주소로 가입된 정보가 있습니다."),
+    //채팅 관련 오류
+    NOTFOUND_ROOM("NOTFOUND_ROOM", "Room id가 잘못되었습니다."),
+    INVALID_MEMBER("INVALID_MEMBER", "해당 유저는 권한이 없습니다."),
+    DUPLICATE_ROOM("DUPLICATE_ROOM", "이미 참여한 채팅방입니다.");
 
     private final String code;
-
     private final String message;
-
     ErrorCode(String code, String message){
         this.code = code;
         this.message = message;

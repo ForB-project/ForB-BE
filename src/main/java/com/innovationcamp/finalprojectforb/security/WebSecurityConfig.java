@@ -48,7 +48,6 @@ public class WebSecurityConfig {
 
         // CSRF 설정 Disable
         http.csrf().disable();
-
         // exception handling 할 때 우리가 만든 클래스를 추가
         http
             .exceptionHandling()

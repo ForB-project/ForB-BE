@@ -1,6 +1,7 @@
 package com.innovationcamp.finalprojectforb.model;
 
 import com.innovationcamp.finalprojectforb.enums.Authority;
+import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +36,10 @@ public class Member extends Timestamped {
     private Authority authority;
 
     private String provider;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatMessage> chatMessages;
+
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
         return passwordEncoder.matches(password, this.password);
