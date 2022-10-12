@@ -11,6 +11,8 @@ import com.innovationcamp.finalprojectforb.model.Post;
 import com.innovationcamp.finalprojectforb.repository.CommentRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,17 @@ public class CommentService {
 
     public List<CommentResponseDto> getAllComment() {
         List<Comment> commentList = commentRepository.findAllByOrderByCreatedAtDesc();
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(new CommentResponseDto(comment));
+        }
+        return commentResponseDtoList;
+    }
+
+    public List<CommentResponseDto> getComment(Long postId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageable);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
@@ -80,6 +93,7 @@ public class CommentService {
         Optional<Post> optionalPost = postRepository.findById(id);
         return optionalPost.orElse(null);
     }
+
     public Comment isPresentComment(Long id) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         return optionalComment.orElse(null);
