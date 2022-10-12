@@ -1,5 +1,6 @@
 package com.innovationcamp.finalprojectforb.model;
 
+import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
 import lombok.AllArgsConstructor;
@@ -32,9 +33,13 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String stackType;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column
     private String provider;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -56,6 +61,10 @@ public class Member extends Timestamped {
     public Long getId(Long memberId) {
         this.id = memberId;
         return memberId;
+    }
+
+    public void saveStackType(StackTypeRequestDto requestDto) {
+        this.stackType = requestDto.getStackType();
     }
 
 }

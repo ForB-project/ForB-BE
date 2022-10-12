@@ -11,6 +11,7 @@ import lombok.Getter;
 public class MemberResponseDto {
     private final Long id;
     private final String nickname;
+    private final String stackType;
     private final Authority authority;
 }
 

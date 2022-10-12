@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Builder
@@ -25,7 +26,11 @@ public class Post extends Timestamped{
     private String title;
 
     @Column(nullable = false)
+    @Size(max=10000)
     private String content;
+
+    @Column
+    private String postImage;
 
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne
@@ -41,16 +46,28 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy ="post", cascade = CascadeType.REMOVE)
     private List<LikePost> likePost;
 
-    public Post(PostRequestDto postRequestDto, Member member) {
+    public Post(PostRequestDto postRequestDto, Member member, String postImage) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.postImage = postImage;
         this.member = member;
     }
 
-    public void update(PostRequestDto postRequestDto) {
-        this.title = postRequestDto.getTitle();
-        this.content = postRequestDto.getContent();
+    public void update(PostRequestDto postRequestDto, String postUpdateImage) {
+        String title = postRequestDto.getTitle();
+        String content = postRequestDto.getContent();
+        String postImage = postUpdateImage;
+        if(title != null){
+            this.title = title;
+        }
+        if(content != null){
+            this.content = content;
+        }
+        if(postImage != null){
+            this.postImage = postImage;
+        } // 수정되지 않은 데이터 기존 유지
     }
+
     public void updateLikes(Long likes) {
         this.likes = likes;
     }

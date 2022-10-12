@@ -23,6 +23,9 @@ public class Comment extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
     private String content;
 
     @JoinColumn(name = "member_id", nullable = false)
@@ -34,9 +37,11 @@ public class Comment extends Timestamped {
     @JsonIgnore
     private Post post;
 
-    public Comment(CommentRequestDto commentRequestDto, Member member) {
+    public Comment(CommentRequestDto commentRequestDto, Member member, Post post) {
+        this.nickname = member.getNickname();
         this.content = commentRequestDto.getContent();
         this.member = member;
+        this.post = post;
     }
 
     public void update(CommentRequestDto commentRequestDto) {
