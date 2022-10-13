@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -41,9 +42,9 @@ public class PostController {
     }
 
     @GetMapping("/api/post/{postId}")
-    public ResponseDto<PostResponseDto> getPost(@PathVariable Long postId) {
+    public ResponseDto<PostResponseDto> getPost(@PathVariable Long postId, HttpServletRequest request) {
         try {
-            return postService.getPost(postId);
+            return postService.getPost(postId,request);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
