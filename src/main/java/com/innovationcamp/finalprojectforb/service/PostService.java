@@ -6,9 +6,11 @@ import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.exception.CustomException;
+import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Comment;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Post;
+import com.innovationcamp.finalprojectforb.repository.LikePostRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +33,19 @@ import java.util.Optional;
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
+    private final LikePostRepository likePostRepository;
     private final S3Upload s3Upload;
+    private final TokenProvider tokenProvider;
 
     public List<PostResponseDto> getAllPost(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc(pageable);
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
 
-        for (Post post : postList) {
-            postResponseDtoList.add(new PostResponseDto(post));
-        }
         return postResponseDtoList;
     }
 
-    public ResponseDto<PostResponseDto> getPost(Long postId) {
+    public ResponseDto<PostResponseDto> getPost(Long postId, HttpServletRequest request) {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         Post post = isPresentPost(postId);
 
@@ -57,18 +59,25 @@ public class PostService {
                     .build();
             commentResponseDtoList.add(commentResponseDto);
         }
-        return ResponseDto.success(
-                        PostResponseDto.builder()
-                                .id(post.getId())
-                                .nickname(post.getMember().getNickname())
-                                .title(post.getTitle())
-                                .content(post.getContent())
-                                .postImage(post.getPostImage())
-                                .createdAt(post.getCreatedAt())
-                                .commentCount(post.getCommentCount())
-                                .commentList(commentResponseDtoList)
-                                .likes(post.getLikes())
-                                .build());
+
+        //로그인 안 한 멤버일 때
+        String accessToken = request.getHeader("Authorization");
+        if(accessToken==null) {
+            return ResponseDto.success(postResponseDto(post, commentResponseDtoList, false));
+        }
+
+        try {
+            // 로그인한 멤버일 때
+            Member member = validateMember(request);
+            // 멤버가 좋아요를 눌렀는 지 여부를 확인
+            boolean checkLike = likePostRepository.existsByMemberAndPost(member, post);
+            PostResponseDto postResponseDto = postResponseDto(post, commentResponseDtoList, checkLike);
+            return ResponseDto.success(postResponseDto);
+        }catch(Exception e){
+            return ResponseDto.success(postResponseDto(post, commentResponseDtoList, false));
+        }
+
+
     }
 
     @Transactional
@@ -131,7 +140,6 @@ public class PostService {
             }
         }
 
-
         post.update(requestDto, postImage);
         post = postRepository.save(post);
         return ResponseDto.success(
@@ -148,11 +156,7 @@ public class PostService {
 
     public List<PostResponseDto> searchPost(String keyword) {
         List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-
-        for (Post post : postList) {
-            postResponseDtoList.add(new PostResponseDto(post));
-        }
+        List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
         return postResponseDtoList;
     }
 
@@ -175,4 +179,43 @@ public class PostService {
         return optionalPost.orElse(null);
     }
 
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+
+    private static PostResponseDto postResponseDto(Post post,List<CommentResponseDto> commentResponseDtoList, boolean checkLike){
+        return PostResponseDto.builder()
+                .id(post.getId())
+                .nickname(post.getMember().getNickname())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .postImage(post.getPostImage())
+                .createdAt(post.getCreatedAt())
+                .commentCount(post.getCommentCount())
+                .commentList(commentResponseDtoList)
+                .likes(post.getLikes())
+                .checkLike(checkLike)
+                .build();
+    }
+
+    private static List<PostResponseDto> postResponseDtoList(List<Post> postList) {
+        List<PostResponseDto> responseDtoList = new ArrayList<>();
+        for (Post post : postList) {
+            PostResponseDto responseDto = PostResponseDto.builder()
+                    .id(post.getId())
+                    .nickname(post.getMember().getNickname())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .postImage(post.getPostImage())
+                    .createdAt(post.getCreatedAt())
+                    .commentCount(post.getCommentCount())
+                    .likes(post.getLikes())
+                    .build();
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
 }
