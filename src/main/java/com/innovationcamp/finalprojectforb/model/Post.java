@@ -45,6 +45,9 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy ="post", cascade = CascadeType.REMOVE)
     private List<LikePost> likePost;
 
+    @Column(nullable = false)
+    private Long commentCount = 0L;
+
     public Post(PostRequestDto postRequestDto, Member member, String postImage) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
@@ -70,4 +73,15 @@ public class Post extends Timestamped{
     public void updateLikes(Long likes) {
         this.likes = likes;
     }
+
+    public void updateCommentCount(Boolean isAdded) {
+        if (isAdded) {
+            this.commentCount++;
+        } else {
+            if (commentCount > 0) {
+                this.commentCount--;
+            }
+        }
+    }
+
 }
