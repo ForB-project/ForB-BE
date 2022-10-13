@@ -54,6 +54,7 @@ public class CommentService {
         Post post = isPresentPost(postId);
         Comment comment = new Comment(requestDto, member, post);
         commentRepository.save(comment);
+        post.updateCommentCount(true);
         return ResponseDto.success(
                 CommentResponseDto.builder()
                         .postId(postId)
@@ -87,6 +88,8 @@ public class CommentService {
             throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
         }
         commentRepository.delete(comment);
+        Post post = comment.getPost();
+        post.updateCommentCount(false);
     }
 
     public Post isPresentPost(Long id) {

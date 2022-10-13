@@ -21,6 +21,7 @@ public class PostResponseDto {
     private String postImage;
     private Long likes;
     private LocalDateTime createdAt;
+    private Long commentCount;
     private List<CommentResponseDto> commentList;
 
 
@@ -31,6 +32,7 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.postImage = post.getPostImage();
         this.likes = post.getLikes();
+        this.commentCount = post.getCommentCount();
         this.createdAt = post.getCreatedAt();
     }
 }

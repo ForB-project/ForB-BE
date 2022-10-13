@@ -65,6 +65,7 @@ public class PostService {
                                 .content(post.getContent())
                                 .postImage(post.getPostImage())
                                 .createdAt(post.getCreatedAt())
+                                .commentCount(post.getCommentCount())
                                 .commentList(commentResponseDtoList)
                                 .likes(post.getLikes())
                                 .build());
