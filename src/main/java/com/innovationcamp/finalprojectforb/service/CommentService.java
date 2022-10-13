@@ -82,6 +82,7 @@ public class CommentService {
                         .build());
     }
 
+    @Transactional
     public void deleteComment(Long commentId, Member member) {
         Comment comment = isPresentComment(commentId);
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
