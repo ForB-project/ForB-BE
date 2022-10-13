@@ -38,7 +38,7 @@ public class Post extends Timestamped{
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-    @Builder.Default
+
     @Column(nullable = false)
     private Long likes = 0L;
 

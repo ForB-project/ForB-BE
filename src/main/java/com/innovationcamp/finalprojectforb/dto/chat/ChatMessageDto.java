@@ -3,11 +3,10 @@ package com.innovationcamp.finalprojectforb.dto.chat;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+@NoArgsConstructor
 @Getter
 @Setter
 public class ChatMessageDto {

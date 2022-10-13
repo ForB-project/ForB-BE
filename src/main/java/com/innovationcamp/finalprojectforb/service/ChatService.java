@@ -186,4 +186,5 @@ public class ChatService {
         }
         return tokenProvider.getMemberFromAuthentication();
     }
+
 }

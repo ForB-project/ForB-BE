@@ -2,6 +2,8 @@ package com.innovationcamp.finalprojectforb.vo;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Data
 @Builder

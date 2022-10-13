@@ -50,26 +50,27 @@ public class WebSecurityConfig {
         http.csrf().disable();
         // exception handling 할 때 우리가 만든 클래스를 추가
         http
-            .exceptionHandling()
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint) // jwt 자체에 문제가 있는거
-            .accessDeniedHandler(jwtAccessDeniedHandler); // jwt는 정상인데 접근하려는 url의 권한이 다를 때
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint) // jwt 자체에 문제가 있는거
+                .accessDeniedHandler(jwtAccessDeniedHandler); // jwt는 정상인데 접근하려는 url의 권한이 다를 때
 
         // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
         http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-            .antMatchers("/api/member/**").permitAll()
-            .antMatchers("/api/oauth2/**").permitAll()
-            .antMatchers("/login/oauth2/**").permitAll()
-            .antMatchers("/api/**").permitAll()
-            .antMatchers("/api/roadmap/**").permitAll()
-            .anyRequest().authenticated();
+                .antMatchers("/api/member/**").permitAll()
+                .antMatchers("/api/oauth2/**").permitAll()
+                .antMatchers("/login/oauth2/**").permitAll()
+                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/roadmap/**").permitAll()
+                .antMatchers("/stomp/**").permitAll()
+                .anyRequest().authenticated();
 
         // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
         http
-            .apply(new JwtSecurityConfig(SECRET_KEY, tokenProvider, userDetailsService));
+                .apply(new JwtSecurityConfig(SECRET_KEY, tokenProvider, userDetailsService));
         return http.build();
     }
 
