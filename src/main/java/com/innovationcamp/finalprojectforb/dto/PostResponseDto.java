@@ -19,6 +19,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String postImage;
+    private boolean checkLike;
     private Long likes;
     private LocalDateTime createdAt;
     private Long commentCount;
