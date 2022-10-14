@@ -9,6 +9,8 @@ import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
 import com.innovationcamp.finalprojectforb.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,11 +28,12 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/api/post")
-    public ResponseDto<List<PostResponseDto>> getAllPost(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseDto<?> getAllPost(@RequestParam("page") int page, @RequestParam("size") int size) {
         List<PostResponseDto> postResponseDtoList;
         page = page -1;
+        Pageable pageable = PageRequest.of(page, size);
         try {
-            postResponseDtoList = postService.getAllPost(page, size);
+            return postService.getAllPost(pageable);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
@@ -38,7 +41,6 @@ public class PostController {
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
-        return new ResponseDto<>(postResponseDtoList);
     }
 
     @GetMapping("/api/post/{postId}")

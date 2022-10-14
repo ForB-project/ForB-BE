@@ -14,7 +14,7 @@ import com.innovationcamp.finalprojectforb.repository.LikePostRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -37,12 +34,15 @@ public class PostService {
     private final S3Upload s3Upload;
     private final TokenProvider tokenProvider;
 
-    public List<PostResponseDto> getAllPost(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+    public ResponseDto<?> getAllPost(Pageable pageable) {
+        Page<Post> postPage = postRepository.findAllByOrderByCreatedAtDesc(pageable);
+        List<Post> postList = postPage.getContent();
         List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
-
-        return postResponseDtoList;
+        Long postCount = postPage.getTotalElements();
+        HashMap<Object,Object> response = new HashMap<>();
+        response.put("postList",postResponseDtoList);
+        response.put("postCount",postCount);
+        return ResponseDto.success(response);
     }
 
     public ResponseDto<PostResponseDto> getPost(Long postId, HttpServletRequest request) {
@@ -67,7 +67,7 @@ public class PostService {
         }
 
         try {
-            // 로그인한 멤버일 때
+            // 로그인 한 멤버일 때
             Member member = validateMember(request);
             // 멤버가 좋아요를 눌렀는 지 여부를 확인
             boolean checkLike = likePostRepository.existsByMemberAndPost(member, post);
