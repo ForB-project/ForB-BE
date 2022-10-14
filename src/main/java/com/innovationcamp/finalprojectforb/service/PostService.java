@@ -40,8 +40,8 @@ public class PostService {
         List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
         Long postCount = postPage.getTotalElements();
         HashMap<Object,Object> response = new HashMap<>();
-        response.put("postList",postResponseDtoList);
-        response.put("postCount",postCount);
+        response.put("postList", postResponseDtoList);
+        response.put("postCount", postCount);
         return ResponseDto.success(response);
     }
 
