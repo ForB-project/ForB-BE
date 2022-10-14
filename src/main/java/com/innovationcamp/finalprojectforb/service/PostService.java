@@ -73,7 +73,7 @@ public class PostService {
             boolean checkLike = likePostRepository.existsByMemberAndPost(member, post);
             PostResponseDto postResponseDto = postResponseDto(post, commentResponseDtoList, checkLike);
             return ResponseDto.success(postResponseDto);
-        }catch(Exception e){
+        } catch(Exception e){
             return ResponseDto.success(postResponseDto(post, commentResponseDtoList, false));
         }
 
@@ -97,7 +97,7 @@ public class PostService {
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .id(post.getId())
-                        .nickname(member.getNickname())
+                        .nickname(post.getMember().getNickname())
                         .title(post.getTitle())
                         .content(post.getContent())
                         .postImage(postImage)
@@ -145,7 +145,7 @@ public class PostService {
         return ResponseDto.success(
                 PostResponseDto.builder()
                         .id(post.getId())
-                        .nickname(member.getNickname())
+                        .nickname(post.getMember().getNickname())
                         .title(post.getTitle())
                         .content(post.getContent())
                         .postImage(postImage)
