@@ -36,4 +36,13 @@ public class MyRoadMapController {
         page = page -1;
         return myRoadMapService.showMyPost(request, page, size);
     }
+
+    @GetMapping("/api/myroadmap/likePost")
+    public ResponseDto<?> showMyLikePost (HttpServletRequest request,
+                                          @RequestParam("page") int page,
+                                          @RequestParam("size") int size) {
+        page = page -1;
+        return myRoadMapService.showMyLikePost(request, page, size);
+    }
+
 }
