@@ -16,16 +16,15 @@ import com.innovationcamp.finalprojectforb.repository.chat.ChatRoomRepository;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -58,7 +57,7 @@ public class ChatService {
 
     // 채팅방 입장
     @Transactional
-    public ResponseDto<?> enterChatRoom(ChatRequestDto message, HttpServletRequest request) {
+    public ResponseDto<?> enterChatRoom(ChatRequestDto message, String request) {
         // 토큰으로 유저찾기
         Member member = validateMember(request);
 
@@ -93,7 +92,7 @@ public class ChatService {
 
     // 채팅방 나가기
     @Transactional
-    public ResponseDto<?> exitChatRoom(Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> exitChatRoom(Long roomId, String request) {
 
         //Member member = memberService.getMember(request);
         Member member = validateMember(request);
@@ -120,9 +119,9 @@ public class ChatService {
 
     // 메세지 보내기
     @Transactional
-    public ResponseDto<?> sendMessage(ChatRequestDto message, HttpServletRequest request) {
+    public ResponseDto<?> sendMessage(ChatRequestDto message, SimpMessageHeaderAccessor accessor) {
         // 토큰으로 유저찾기
-        Member member = validateMember(request);
+        Member member = validateMember(String.valueOf(accessor));
 
         if (member == null) {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
@@ -149,7 +148,7 @@ public class ChatService {
 
 
     // 기존 채팅방 메세지들 불러오기
-    public ResponseDto<?> getMessage(Long roomId, HttpServletRequest request) {
+    public ResponseDto<?> getMessage(Long roomId, String request) {
 
         //Member member = memberService.getMember(request);
         Member member = validateMember(request);
@@ -180,8 +179,8 @@ public class ChatService {
         return ResponseDto.success(chatMessageDtos);
     }
 
-    public Member validateMember(HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+    public Member validateMember(String jwtToken) {
+        if (!tokenProvider.validateToken(jwtToken)) {
             return null;
         }
         return tokenProvider.getMemberFromAuthentication();

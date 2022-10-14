@@ -4,6 +4,7 @@ import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +22,13 @@ public class ChatRoomController {
 
     // 채팅메세지 불러오기
     @GetMapping("/api/chat/message/{roomId}")
-    public ResponseDto<?> getMessageLog(@PathVariable Long roomId, HttpServletRequest request) {
-        return chatService.getMessage(roomId, request);
+    public ResponseDto<?> getMessageLog(@PathVariable Long roomId, @Header("Authorization") String token) {
+        return chatService.getMessage(roomId, token);
     }
 
     // 채팅방 나가기
     @DeleteMapping("/api/chat/member/{roomId}")
-    public ResponseDto<?> exitChatRoom(@PathVariable Long roomId, HttpServletRequest request) {
-        return chatService.exitChatRoom(roomId, request);
+    public ResponseDto<?> exitChatRoom(@PathVariable Long roomId, @Header("Authorization") String token) {
+        return chatService.exitChatRoom(roomId, token);
     }
 }

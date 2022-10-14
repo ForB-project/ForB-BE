@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.bridge.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.messaging.handler.annotation.Header;
@@ -31,9 +32,10 @@ public class ChatController {
     // 채팅메세지 보내기
     @MessageMapping("/chat/message")
     public ResponseDto<?> message(ChatRequestDto message,
-                                  HttpServletRequest request) {
-        return chatService.sendMessage(message, request);
+                                  SimpMessageHeaderAccessor accessor) {
+        return chatService.sendMessage(message, accessor);
     }
+
      ////테스트
     @MessageMapping("/chat/test")
     public void messageTest(ChatRequestDto message) {
@@ -41,15 +43,14 @@ public class ChatController {
         //이 메서드는 매개변수로 각각 메시지의 도착지점과 객체를 넣어줍니다.
         //이를 통해서 도착지점 즉 sub 되는 지점으로 인자로 들어온 객체를 Message 객체로 변환하여
         //해당 도착지점을 sub 하고 있는 모든 사용자에게 메시지를 보내줍니다.
-
         simpMessageSendingOperations.convertAndSend("/sub/chat/"+message.getRoomId(),message.getMessage() + "서버전송가능");
     }
 
     // 채팅방 입장
     @MessageMapping("/chat/enter")
     public ResponseDto<?> enterChatRoom(ChatRequestDto message,
-                                        HttpServletRequest request) {
-        return chatService.enterChatRoom(message, request);
+                                        @Header("Authorization") String token) {
+        return chatService.enterChatRoom(message, token);
     }
 
     /*
