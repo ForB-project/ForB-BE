@@ -105,10 +105,14 @@ public class PostController {
     }
 
     @GetMapping("/api/post/search")
-    public ResponseDto<List<PostResponseDto>> searchLecture(@RequestParam(value = "keyword") String keyword) {
+    public ResponseDto<List<PostResponseDto>> searchLecture(@RequestParam(value = "keyword") String keyword,
+                                                            @RequestParam("page") int page,
+                                                            @RequestParam("size") int size) {
         List<PostResponseDto> postResponseDtoList;
+        page = page -1;
+        Pageable pageable = PageRequest.of(page, size);
         try {
-            postResponseDtoList = postService.searchPost(keyword);
+            postResponseDtoList = postService.searchPost(keyword, pageable);
         }catch (EntityNotFoundException e){
             log.error(e.getMessage());
             return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
