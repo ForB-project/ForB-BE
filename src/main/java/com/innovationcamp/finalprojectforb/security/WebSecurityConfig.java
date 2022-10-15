@@ -66,6 +66,9 @@ public class WebSecurityConfig {
                 .antMatchers("/api/**").permitAll()
                 .antMatchers("/api/roadmap/**").permitAll()
                 .antMatchers("/stomp/**").permitAll()
+                .antMatchers("/pub/**").permitAll()
+                .antMatchers("/sub/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
                 .anyRequest().authenticated();
 
         // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
