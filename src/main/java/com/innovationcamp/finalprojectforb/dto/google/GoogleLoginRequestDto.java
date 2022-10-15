@@ -1,13 +1,12 @@
-package com.innovationcamp.finalprojectforb.vo;
+package com.innovationcamp.finalprojectforb.dto.google;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 @Data
 @Builder
-public class GoogleLoginRequestVo {
+public class GoogleLoginRequestDto {
     private String clientId;    // 애플리케이션의 클라이언트 ID
     private String redirectUri; // Google 로그인 후 redirect 위치
     private String clientSecret;    // 클라이언트 보안 비밀

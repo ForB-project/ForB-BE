@@ -1,4 +1,4 @@
-package com.innovationcamp.finalprojectforb.dto;
+package com.innovationcamp.finalprojectforb.dto.google;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
