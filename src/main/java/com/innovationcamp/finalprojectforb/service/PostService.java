@@ -154,8 +154,9 @@ public class PostService {
                         .build());
     }
 
-    public List<PostResponseDto> searchPost(String keyword) {
-        List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
+    public List<PostResponseDto> searchPost(String keyword, Pageable pageable) {
+        Page<Post> postPage = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword, pageable);
+        List<Post> postList = postPage.getContent();
         List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
         return postResponseDtoList;
     }
