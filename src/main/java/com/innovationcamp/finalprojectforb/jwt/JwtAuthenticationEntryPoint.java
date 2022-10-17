@@ -24,5 +24,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                         new ResponseDto<>(null, ErrorCode.BAD_TOKEN)));
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
+
 }
 

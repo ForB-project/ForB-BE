@@ -31,9 +31,6 @@ public class StackType {
     @Column(nullable = false)
     private String description2;
 
-
-    //이미지 넣기
-
     public StackType(String stackType, String title, String description1, String description2) {
         this.stackType = stackType;
         this.title = title;

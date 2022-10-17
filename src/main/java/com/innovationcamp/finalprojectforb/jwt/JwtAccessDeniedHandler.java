@@ -25,4 +25,5 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
                         new ResponseDto<>(null, ErrorCode.REQUIRE_AUTHORITY)));
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
+
 }

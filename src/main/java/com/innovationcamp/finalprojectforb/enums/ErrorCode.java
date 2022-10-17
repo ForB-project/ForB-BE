@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-
     ENTITY_NOT_FOUND("NOT_FOUND", "데이터가 존재하지 않습니다."),
     NEED_LOGIN("NEED_LOGIN", "로그인이 필요합니다."),
     BAD_TOKEN_REQUEST("BAD_TOKEN_REQUEST", "토큰이 유효하지 않습니다."),
@@ -30,9 +29,11 @@ public enum ErrorCode {
 
     private final String code;
     private final String message;
+
     ErrorCode(String code, String message){
         this.code = code;
         this.message = message;
     }
+
 }
 

@@ -25,7 +25,6 @@ public class PostResponseDto {
     private Long commentCount;
     private List<CommentResponseDto> commentList;
 
-
     public PostResponseDto(Post post) {
         this.id = post.getId();
         this.nickname = post.getMember().getNickname();
@@ -36,4 +35,5 @@ public class PostResponseDto {
         this.commentCount = post.getCommentCount();
         this.createdAt = post.getCreatedAt();
     }
+
 }
