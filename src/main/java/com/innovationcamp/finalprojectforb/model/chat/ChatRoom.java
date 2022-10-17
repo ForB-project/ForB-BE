@@ -15,9 +15,14 @@ public class ChatRoom extends Timestamped {
 
     // 채팅방 번호
     @Id
-    private Long id;
+    private String id;
+
+    @Column
+    private String simpSessionId;
 
     // 챗 멤버 객체
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMember> chatMember;
+
+
 }

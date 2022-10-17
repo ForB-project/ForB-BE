@@ -10,6 +10,7 @@ import com.innovationcamp.finalprojectforb.model.roadmap.*;
 import com.innovationcamp.finalprojectforb.repository.HeartRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class RoadMapDetailService {
@@ -47,7 +49,7 @@ public class RoadMapDetailService {
         if (member == null) {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
-
+        log.info(Optional.ofNullable("member 받아지는 값 : " + member).orElse("UnknownUser"));
         Sort sort = Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);

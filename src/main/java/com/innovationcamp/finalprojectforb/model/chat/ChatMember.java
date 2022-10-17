@@ -27,8 +27,16 @@ public class ChatMember extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
 
+    @Column
+    private String sessionId;
+
     public ChatMember(Member member, ChatRoom chatRoom) {
         this.member = member;
         this.chatRoom = chatRoom;
+    }
+
+    public ChatMember(Member member, String sessionId) {
+        this.member = member;
+        this.sessionId = sessionId;
     }
 }

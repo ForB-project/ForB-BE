@@ -20,9 +20,10 @@ public class ChatRoomController {
 //        return chatService.getChatMember(eventId, request);
 //    }
 
+
     // 채팅메세지 불러오기
     @GetMapping("/api/chat/message/{roomId}")
-    public ResponseDto<?> getMessageLog(@PathVariable Long roomId, @Header("Authorization") String token) {
+    public ResponseDto<?> getMessageLog(@PathVariable Long roomId,@Header("Authorization") String token) {
         return chatService.getMessage(roomId, token);
     }
 

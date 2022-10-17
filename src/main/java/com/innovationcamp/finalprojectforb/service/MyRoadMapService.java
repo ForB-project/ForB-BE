@@ -15,6 +15,7 @@ import com.innovationcamp.finalprojectforb.repository.LikePostRepository;
 import com.innovationcamp.finalprojectforb.repository.PostRepository;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class MyRoadMapService {
