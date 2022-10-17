@@ -57,7 +57,9 @@ public class CommentController {
 
 
     @PostMapping("/api/auth/comment/{postId}")
-    public ResponseDto<CommentResponseDto> createComment(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
+    public ResponseDto<CommentResponseDto> createComment(@PathVariable Long postId,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                         @RequestBody CommentRequestDto requestDto) {
         try {
             Member member = userDetails.getMember();
             return commentService.createComment(postId, requestDto, member);
@@ -71,7 +73,9 @@ public class CommentController {
     }
 
     @PutMapping("/api/auth/comment/{commentId}")
-    public ResponseDto<CommentResponseDto> updateComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto) {
+    public ResponseDto<CommentResponseDto> updateComment(@PathVariable Long commentId,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                         @RequestBody CommentRequestDto requestDto) {
         try {
             Member member = userDetails.getMember();
             return commentService.updateComment(commentId, requestDto, member);
@@ -98,4 +102,5 @@ public class CommentController {
         }
         return new ResponseDto<>("delete success");
     }
+
 }

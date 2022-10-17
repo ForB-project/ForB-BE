@@ -31,11 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public static String AUTHORIZATION_HEADER = "Authorization";
     public static String BEARER_PREFIX = "Bearer ";
-
     public static String AUTHORITIES_KEY = "auth";
-
     private final String SECRET_KEY;
-
     private final TokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -125,7 +122,6 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response); // 시큐리티 체인이기 때문에 해당 메소드 종료 시에는 이 명령어를 사용해야한다.
     }
 
-
     // Request Header 에서 토큰 정보를 꺼내오기
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
@@ -136,5 +132,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         return null;
     }
+
 }
 
