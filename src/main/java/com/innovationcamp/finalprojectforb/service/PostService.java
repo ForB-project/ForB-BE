@@ -76,8 +76,17 @@ public class PostService {
         } catch(Exception e){
             return ResponseDto.success(postResponseDto(post, commentResponseDtoList, false));
         }
+    }
 
-
+    public ResponseDto<?> searchPost(String keyword, Pageable pageable) {
+        Page<Post> postPage = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword, pageable);
+        List<Post> postList = postPage.getContent();
+        List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
+        Long postCount = postPage.getTotalElements();
+        HashMap<Object,Object> response = new HashMap<>();
+        response.put("postSearchList", postResponseDtoList);
+        response.put("postSearchCount", postCount);
+        return ResponseDto.success(response);
     }
 
     @Transactional
@@ -154,13 +163,6 @@ public class PostService {
                         .build());
     }
 
-    public List<PostResponseDto> searchPost(String keyword, Pageable pageable) {
-        Page<Post> postPage = postRepository.findByTitleContainingOrderByCreatedAtDesc(keyword, pageable);
-        List<Post> postList = postPage.getContent();
-        List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
-        return postResponseDtoList;
-    }
-
     public void deletePost(Long postId, Member member) {
         Post post = isPresentPost(postId);
         if (!Objects.equals(post.getMember().getId(), member.getId())) {
@@ -219,4 +221,5 @@ public class PostService {
         }
         return responseDtoList;
     }
+
 }
