@@ -25,4 +25,9 @@ public class ChatMessageDto {
         this.message = member.getNickname() + "님이 입장하셨습니다.";
         this.sendTime = time;
     }
+
+    public ChatMessageDto(String memberName, String time) {
+        this.sender = memberName;
+        this.sendTime = time;
+    }
 }

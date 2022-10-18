@@ -1,4 +1,7 @@
 package com.innovationcamp.finalprojectforb.model.chat;
+
+
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Timestamped;
 import lombok.*;
 
@@ -15,14 +18,24 @@ public class ChatRoom extends Timestamped {
 
     // 채팅방 번호
     @Id
-    private String id;
-
-    @Column
-    private String simpSessionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // 챗 멤버 객체
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMember> chatMember;
 
+    // 채팅메시지
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatMessage> chatMessage;
 
+    //타겟멤버
+    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Member member;
+
+    public Long getId(Long chatRoomId) {
+        this.id = chatRoomId;
+        return chatRoomId;
+    }
 }

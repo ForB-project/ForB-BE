@@ -2,7 +2,9 @@ package com.innovationcamp.finalprojectforb.model;
 
 import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
+import com.innovationcamp.finalprojectforb.model.chat.ChatMember;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
+import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,8 +44,17 @@ public class Member extends Timestamped {
     @Column
     private String provider;
 
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatMessage> chatMessages;
+    private List<ChatRoom> chatRoom;
+
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatMember> chatMember;
+
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatMessage> chatMessage;
 
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {

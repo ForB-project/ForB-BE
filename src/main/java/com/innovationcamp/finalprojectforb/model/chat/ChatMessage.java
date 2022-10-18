@@ -1,5 +1,6 @@
 package com.innovationcamp.finalprojectforb.model.chat;
 
+
 import com.innovationcamp.finalprojectforb.dto.chat.ChatRequestDto;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Timestamped;
@@ -26,10 +27,14 @@ public class ChatMessage extends Timestamped {
     @Column
     private String message;
 
-    // 발신자의 id (멤버한명이 여러개의 메세지를 보냄)
-    @JoinColumn(name = "sender_id", nullable = false)
+    //발신자의 id (멤버한명이 여러개의 메세지를 보냄)
+    @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    // 발신자의 id (멤버한명이 여러개의 메세지를 보냄)
+    @Column
+    private String memberName;
 
     // 채팅방 번호 (챗룸 한개에 많은 채팅메세지)
     @JoinColumn(name = "chat_room_id", nullable = false)
@@ -44,5 +49,9 @@ public class ChatMessage extends Timestamped {
         this.member = member;
         this.chatRoom = chatRoom;
         this.sendTime = time;
+    }
+
+    public ChatMessage(String memberName, ChatRoom chatRoom, ChatRequestDto message, String time) {
+        super();
     }
 }

@@ -19,6 +19,7 @@ public class ChatMember extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //수신자
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
@@ -27,16 +28,12 @@ public class ChatMember extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
 
-    @Column
-    private String sessionId;
-
     public ChatMember(Member member, ChatRoom chatRoom) {
         this.member = member;
         this.chatRoom = chatRoom;
     }
 
-    public ChatMember(Member member, String sessionId) {
+    public ChatMember(Member member) {
         this.member = member;
-        this.sessionId = sessionId;
     }
 }
