@@ -20,8 +20,8 @@ jobs:
       run: |
         echo "AWS_REGION=ap-northeast-2" >> $GITHUB_ENV |
         echo "S3_BUCKET_NAME=my-final-forb-github-actions" >> $GITHUB_ENV |
-        echo "CODE_DEPLOY_APPLICATION_NAME=my-final-forb-codedeploy-app" >> $GITHUB_ENV |
-        echo "CODE_DEPLOY_DEPLOYMENT_GROUP_NAME=my-final-forb-codedeploy-depolyment-group" >> $GITHUB_ENV     
+        echo "CODE_DEPLOY_APPLICATION_NAME=finalforb" >> $GITHUB_ENV |
+        echo "CODE_DEPLOY_DEPLOYMENT_GROUP_NAME=finalforb-depolyment-group" >> $GITHUB_ENV     
       
     # 기본 체크아웃
     - name: Checkout
