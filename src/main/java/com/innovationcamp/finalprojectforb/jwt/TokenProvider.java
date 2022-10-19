@@ -7,21 +7,25 @@ import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.RefreshToken;
 import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
+import com.innovationcamp.finalprojectforb.model.UserDetailsServiceImpl;
 import com.innovationcamp.finalprojectforb.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
+
 
 @Slf4j
 @Component
@@ -32,11 +36,14 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
 
     private final Key key;
-
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository) {
+    private final UserDetailsServiceImpl userDetailsService;
+
+
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, RefreshTokenRepository refreshTokenRepository, UserDetailsServiceImpl userDetailsService) {
         this.refreshTokenRepository = refreshTokenRepository;
+        this.userDetailsService = userDetailsService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -116,5 +123,52 @@ public class TokenProvider {
         refreshTokenRepository.delete(refreshToken);
         return new ResponseDto<>("성공적으로 로그아웃하였습니다.");
     }
+
+    // JWT 토큰에서 username 조회
+    public String getAuthenticationUsername(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername((this.getUserPk(token)));
+        log.info("tokenProvider의 userDetails : " + userDetails);
+        return userDetails.getUsername();
+    }
+
+    // 토큰에서 회원 정보 추출
+    public String getUserPk(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    /*
+     * Jwt Token을 복호화 하여 이름을 얻는다.
+     */
+    public String getUserNameFromJwt(String token){
+        return getClaims(token).getBody().getId();
+    }
+
+    /*
+     * Jwt Token의 유효성을 체크한다.
+     */
+    public boolean validateStompToken(String token){
+    return this.getClaims(token) != null; }
+
+    private Jws<Claims> getClaims(String token){
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        } catch (io.jsonwebtoken.security.SignatureException ex){
+            log.error("Invalid JWT signature");
+            throw ex;
+        } catch (MalformedJwtException ex){
+            log.error("Invalid JWT token");
+            throw ex;
+        } catch (ExpiredJwtException ex){
+            log.error("Expired JWT token");
+            throw ex;
+        } catch (UnsupportedJwtException ex) {
+            log.error("Unsupported JWT token");
+            throw ex;
+        } catch (IllegalArgumentException ex) {
+            log.error("JWT claims string is empty.");
+            throw ex;
+        }
+    }
+
 }
 

@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long postId;
     private Long id;
+
+    private Long memberId;
     private String nickname;
     private String content;
     private LocalDateTime createdAt;

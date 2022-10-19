@@ -2,57 +2,31 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.chat.ChatRequestDto;
-import com.innovationcamp.finalprojectforb.model.UserDetailsImpl;
+import com.innovationcamp.finalprojectforb.repository.chat.ChatMessageRepository;
 import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatController {
-   /*
-    둘의 차이는 별로 다를게 없다.
-    위에꺼는 interface - contract : 실제로 특정 사용자에게 메세지를 보내는 경우 많이 사용
-    아래꺼는 위에꺼의 좀더 구체적인 하위 인터페이스
-    */
-    private final SimpMessagingTemplate simpMessagingTemplate;
-
     private final ChatService chatService;
 
 
-    /*
-    채팅을 수신(sub)하고, 송신(pub)하기 위한 Controller
-    @MessageMapping: 이 어노테이션은 Stomp에서 들어오는 message를 서버에서 발송(pub)한 메세지가 도착하는 엔드포인트입니다
-     */
-
     // 채팅메세지 보내기
-    @MessageMapping("/chat/test")
+    @MessageMapping("/chat/message")
     public ResponseDto<?> message(ChatRequestDto message,
                                   @Header("Authorization") String token) {
         //인자에 SimpMessageHeaderAccessor를 추가하면 해당 메시지의 헤더에 접근할 수 있다
-        log.info(Optional.ofNullable("token 받아지는 값 : " + token).orElse("UnknownUser"));
+        log.info(Optional.ofNullable("test 컨트롤러 : token 값 : " + token).orElse("UnknownUser"));
         return chatService.sendMessage(message, token);
     }
-
-//    //채팅방 생성
-//    @GetMapping("/api/posts/{user_id}/chat")
-//    public ResponseDto<?> EnterChatRoom(@PathVariable Long user_id, @Header("Authorization") String token){
-//        return chatService.enterChatRoom(user_id, token);
-//    }
 
     /*
     또 Spring에서 제공해주는 SimpMessagingTemplate.class를 사용한다.
@@ -60,33 +34,6 @@ public class ChatController {
     위 예제에서 사용한 convertAndSend()같은 경우는 파라미터를 두개받는데 첫번째가 destination 두번째는 payload를 뜻한다.
      */
 
-     ////테스트용////
-     // 채팅 메시지를 @MessageMapping 형태로 받는다
-     // 웹소켓으로 publish 된 메시지를 받는 곳이다
-    @MessageMapping("/chat/message")
-    public void messageTest(ChatRequestDto message,
-                            SimpMessageHeaderAccessor accessor) {
-        log.info("accessor로 받아지는 값 : " + accessor);
-
-        //@Header : 커스텀헤더에서 토큰값 가져올때 사용
-        /*
-        convertAndSend
-        이 메서드는 매개변수로 각각 메시지의 도착지점과 객체를 넣어줍니다.
-        이를 통해서 도착지점 즉 sub 되는 지점으로 인자로 들어온 객체를 Message 객체로 변환하여
-        해당 도착지점을 sub 하고 있는 모든 사용자에게 메시지를 보내줍니다.
-         */
-        simpMessagingTemplate.convertAndSend("/sub/chat/room/"+ message.getRoomId(),message);
-        log.info("메시지 : " + message);
-        log.info("룸넘버 : " + message.getRoomId());
-    }
-
-    // 채팅방 입장
-    @MessageMapping("/chat/enter")
-    public ResponseDto<?> enterChatRoom(ChatRequestDto message,
-                                        @Header("Authorization") String token) {
-        return chatService.enterChatRoom(message, token);
-    }
-    //@Header("Authorization") String token
     /*
     MessageMapping어노테이션은 기존의 requestMapping과 비슷한 역할
     http 요청이 들어왔을때, 그 요청의 경로에 맞는 핸들러에게 처리를 위임하듯이

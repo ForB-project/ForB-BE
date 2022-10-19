@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     // 실제 필터링 로직은 doFilterInternal 에 들어감
     // JWT 토큰의 인증 정보를 현재 쓰레드의 SecurityContext 에 저장하는 역할 수행
+    //인증이나 권한이 필요한 주소요청이 있을 때 해당 필터를 타게 될 것
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
@@ -117,7 +118,13 @@ public class JwtFilter extends OncePerRequestFilter {
             Collection<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(authority);
 
+            /*
+             * UsernamePasswordAuthenticationToken authenticationToken =
+               new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+               Authentication authentication = authenticationManager.authenticate(authenticationToken);
+             */
             Authentication authentication =
+                    //토큰에 있는 유저네임만 받음
                     new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

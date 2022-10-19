@@ -29,7 +29,7 @@ public class ChatRoom extends Timestamped {
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> chatMessage;
 
-    //타겟멤버
+    //발신자
     @JoinColumn(name = "member_id", nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private Member member;

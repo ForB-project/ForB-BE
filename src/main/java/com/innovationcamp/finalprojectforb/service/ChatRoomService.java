@@ -1,14 +1,18 @@
 package com.innovationcamp.finalprojectforb.service;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
+import com.innovationcamp.finalprojectforb.dto.chat.ChatMemberListResDto;
 import com.innovationcamp.finalprojectforb.dto.chat.ChatRoomResDto;
+import com.innovationcamp.finalprojectforb.dto.chat.MessageDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMember;
+import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
 import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import com.innovationcamp.finalprojectforb.repository.chat.ChatMemberRepository;
+import com.innovationcamp.finalprojectforb.repository.chat.ChatMessageRepository;
 import com.innovationcamp.finalprojectforb.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,39 +34,50 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
+    // 채팅방 생성
     @Transactional
     public ResponseDto<?> createChatRoom(Long targetMemberId, HttpServletRequest request) {
-        //멤버아이디는 해당 방 유저
+
+        // targetMemberId는 수신 유저
         Member targetMember = isPresentTargetMember(targetMemberId);
-        // 토큰으로 '나' 유저찾기
+
+        // 토큰으로 '나' 발신 유저
         Member member = validateMember(request);
         if (member == null) {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        Member memberIdSet = new Member();
-        memberIdSet.getId(targetMember.getId());
+        // 채팅방을 만들고 발행(pub)한 사람이 있는지
+        List<ChatRoom> findChatRoom = chatRoomRepository.findByMemberId(member.getId());
+        log.info("findChatRoom {}" + findChatRoom);
 
-        //방만들기 ( roomId + 수신자Id )
+        // 해당 채팅방을 수신(sub)하는 사람이 있는지
+        List<ChatMember> findChatMember = chatMemberRepository.findByMemberId(targetMemberId);
+        log.info("findChatMember {} " + findChatMember);
+
+        // 이미 동일한 pub/sub 유저가 있다면 방 만들기 취소
+        if (findChatRoom != null && !findChatRoom.isEmpty() && findChatMember != null && !findChatMember.isEmpty()) {
+            return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
+        }
+
+        Member memberIdSet = new Member();
+        memberIdSet.getId(member.getId());
+
+        // 방만들기 ( roomId + 발행(pub)유저 )
         ChatRoom chatRoom = ChatRoom.builder()
                 .member(memberIdSet)
                 .build();
         chatRoomRepository.save(chatRoom);
 
-        ChatRoom chatRommIdSet = new ChatRoom();
-        chatRommIdSet.getId(chatRoom.getId());
+        ChatRoom chatRoomIdSet = new ChatRoom();
+        chatRoomIdSet.getId(chatRoom.getId());
 
-        Optional<ChatRoom> findChatMember = chatRoomRepository.findByIdAndMemberId(chatRoom.getId(), targetMemberId);
-
-        // 이미 동일 타겟 멤버와 있는 채팅방이라면 막아야함.
-        if (findChatMember == null) {
-            return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
-        }
-        //챗멤버 추가하기 - 없다면 채팅방 멤버목록에 넣기
+        // 챗멤버 만들기 ( roomId + 수신(sub)Id )
         ChatMember chatMember = ChatMember.builder()
+                .chatRoom(chatRoomIdSet)
                 .member(targetMember)
-                .chatRoom(chatRommIdSet)
                 .build();
         chatMemberRepository.save(chatMember);
 
@@ -74,10 +90,101 @@ public class ChatRoomService {
                         .build());
         return ResponseDto.success(chatRoomResDtos);
     }
+
+    // 채팅유저 목록 불러오기
+    public ResponseDto<?> getChatMembers(HttpServletRequest request) {
+        // 토큰으로 '나' 발신 유저
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+        List<ChatMemberListResDto> chatMemberListResDtoList = new ArrayList<>();
+
+        // pub 유저가 만든 채팅방 넘버 => 해당 채팅방 + sub 유저 불러오기
+        List<ChatRoom> findRoomId1 = chatRoomRepository.findAllByMemberId(member.getId());
+        for (ChatRoom room : findRoomId1) {
+            List<ChatMember> chatList = chatMemberRepository.findAllByChatRoomId(room.getId());
+            for (ChatMember chatMemberList : chatList) {
+                chatMemberListResDtoList.add(
+                        ChatMemberListResDto.builder()
+                                .roomId(chatMemberList.getChatRoom().getId())
+                                .subMember(chatMemberList.getMember().getNickname())
+                                .build());
+            }
+        }
+        // sub 유저 입장 => 해당 채팅방 + pub 유저 불러오기
+        List<ChatMember> findRoomId2 = chatMemberRepository.findAllByMemberId(member.getId());
+        for (ChatMember room : findRoomId2) {
+            List<ChatRoom> chatList = chatRoomRepository.findAllById(Collections.singleton(room.getChatRoom().getId()));
+            for (ChatRoom chatRoomList : chatList) {
+                chatMemberListResDtoList.add(
+                        ChatMemberListResDto.builder()
+                                .roomId(chatRoomList.getId())
+                                .pubMember(chatRoomList.getMember().getNickname())
+                                .build());
+            }
+        }
+        return ResponseDto.success(chatMemberListResDtoList);
+    }
+
+    // 채팅방 나가기
+    @Transactional
+    public ResponseDto<?> exitChatRoom(Long roomId, HttpServletRequest request) {
+        // 토큰으로 '나' 발신 유저
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+        // CascadeType으로 ChatRoom 삭제되면 ChatMember도 삭제됨
+        ChatRoom chatRoom = chatRoomRepository.findByIdAndMemberId(roomId, member.getId());  //pub 유저 입장
+        ChatMember chatMember = chatMemberRepository.findByChatRoomIdAndMemberId(roomId, member.getId()); //sub 유저 입장
+        if (chatRoom == null && chatMember == null) {
+            return new ResponseDto<>(null, ErrorCode.NOTFOUND_ROOM);
+        } else if (chatMember != null) {
+            chatRoomRepository.deleteAllById(Collections.singleton(roomId));
+        } else if (chatRoom != null) {
+            chatRoomRepository.delete(chatRoom);
+        }
+        return ResponseDto.success("채팅방 나가기 완료");
+    }
+
+    // 기존 채팅방 메세지들 불러오기
+    public ResponseDto<?> getMessage(Long roomId, HttpServletRequest request) {
+
+        Member member = validateMember(request);
+        if (member == null) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomById(roomId);
+        if (chatRoom == null){
+            return new ResponseDto<>(null, ErrorCode.NOTFOUND_ROOM);
+        }
+
+        List<ChatMessage> chatMessageList = chatMessageRepository.findAllByChatRoomIdOrderBySendTimeAsc(roomId);
+        if (chatMessageList == null && chatMessageList.isEmpty()) {
+            return new ResponseDto<>(null, ErrorCode.INVALID_MEMBER);
+        }
+
+        List<MessageDto> messageDtos = new ArrayList<>();
+
+        for (ChatMessage chatMessage : chatMessageList) {
+            messageDtos.add(
+                    MessageDto.builder()
+                            .me(member.getNickname())
+                            .sender(chatMessage.getMemberName())
+                            .message(chatMessage.getMessage())
+                            .sendTime(chatMessage.getSendTime())
+                            .build());
+        }
+        return ResponseDto.success(messageDtos);
+    }
+
     private Member isPresentTargetMember(Long targetMemberId) {
         Optional<Member> optionalMember = memberRepository.findById(targetMemberId);
         return optionalMember.orElse(null);
     }
+
     public Member validateMember(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return null;

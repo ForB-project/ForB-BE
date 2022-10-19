@@ -192,6 +192,7 @@ public class PostService {
     private static PostResponseDto postResponseDto(Post post,List<CommentResponseDto> commentResponseDtoList, boolean checkLike){
         return PostResponseDto.builder()
                 .id(post.getId())
+                .memberId(post.getMember().getId())
                 .nickname(post.getMember().getNickname())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -209,6 +210,7 @@ public class PostService {
         for (Post post : postList) {
             PostResponseDto responseDto = PostResponseDto.builder()
                     .id(post.getId())
+                    .memberId(post.getMember().getId())
                     .nickname(post.getMember().getNickname())
                     .title(post.getTitle())
                     .content(post.getContent())

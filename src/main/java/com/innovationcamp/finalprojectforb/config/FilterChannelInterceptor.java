@@ -1,48 +1,23 @@
 package com.innovationcamp.finalprojectforb.config;
 
-import com.innovationcamp.finalprojectforb.dto.ResponseDto;
-import com.innovationcamp.finalprojectforb.dto.chat.ChatRequestDto;
-import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.exception.CustomException;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
-import com.innovationcamp.finalprojectforb.model.chat.ChatMember;
-import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
-import com.innovationcamp.finalprojectforb.model.roadmap.Html;
-import com.innovationcamp.finalprojectforb.repository.MemberRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatMemberRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatRoomRepository;
-import com.innovationcamp.finalprojectforb.service.ChatService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.io.Decoders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 @Log4j2
 @RequiredArgsConstructor
 @Component
-//Spring Security보다 Interceoptor의 우선순위를 올리기 위해 해당 어노테이션 사용
-@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class FilterChannelInterceptor implements ChannelInterceptor {
     private final TokenProvider tokenProvider;
 
@@ -96,48 +71,11 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
             //Header의 jwt token 검증
             boolean isOkToken = tokenProvider.validateToken(jwtToken);
             log.info("CONNECT 시 토큰검증 : " + isOkToken);
-//            if(isOkToken == true) {
-//                Member member = tokenProvider.getMemberFromAuthentication();
-//                log.info("CONNECT 시 memberId가 들어오는지 : " + member.getId());
-//                log.info("CONNECT 시 memberEmail이 들어오는지 : " + member.getEmail());
-//                log.info("CONNECT 시 memberEmail이 들어오는지 : " + member.getChatMessages());
-//            }
 
         //StompCommand.SUBSCRIBE : 구독 요청이 들어왔을 때 user가 일치하는지 확인하고 일치한다면 채팅방 목록에 추가함.
         } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
-
-            String simpSessionId = Optional.ofNullable((String) message.getHeaders().get("simpSessionId")).orElse("no session");
-            log.info("SUBSCRIBE 시 simpSessionId 들어오는지 : " + simpSessionId);
-            // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
-            // roomId를 URL로 전송해주고 있어 추출 필요
             String roomId = Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId");
             log.info("SUBSCRIBE 시 roomId 들어오는지 : " + roomId);
-            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
-            // sessionId는 정상적으로 들어가고있음
-        //    String sessionId = (String) message.getHeaders().get("simpSessionId");
-      //      Long userId = (Long) message.getHeaders().get("User");
-      //      log.info("SUBSCRIBE 시 추가된 userId 들어오는지 : " + userId);
-//            Member memberIdSet = new Member();
-//            memberIdSet.getId(userId);
-//            ChatMember chatMember = new ChatMember(memberIdSet,sessionId);
-//            chatMemberRepository.save(chatMember);
-
-           // chatRoom.setChatMember(tokenProvider.getMemberFromAuthentication(jwtToken));
-
-////            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
-////            // sessionId는 정상적으로 들어가고있음
-//            //setSessionRoomId() : Redis를 이용하여 user와 채팅방을 매핑시킴
-////            String sessionId = (String) message.getHeaders().get("simpSessionId");
-////            chatRoomService.setUserEnterInfo(sessionId, roomId);
-////
-////            // 클라이언트 입장 메시지를 채팅방에 발송한다.(redis publish)
-////            String token = Optional.ofNullable(accessor.getFirstNativeHeader("token")).orElse("UnknownUser");
-////            String name = jwtTokenProvider.getAuthenticationUsername(token);
-////            chatService.sendChatMessage(ChatMessage.builder().type(ChatMessage.MessageType.ENTER).roomId(roomId).sender(name).build());
-////
-////            log.info("SUBSCRIBED {}, {}", name, roomId);
-//////        }
-
         }
         return message;
     }

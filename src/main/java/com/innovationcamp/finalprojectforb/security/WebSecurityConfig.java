@@ -77,7 +77,7 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
+    @Bean//패스워드인코드를 IoC에 등록 => 스프링이 Ioc 알아서 이걸 찾아서 DB랑 암호화해서 비교
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
     }
