@@ -1,35 +1,23 @@
 package com.innovationcamp.finalprojectforb.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.ContentReqDto;
-import com.innovationcamp.finalprojectforb.dto.roadmap.ContentResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.roadmap.*;
 import com.innovationcamp.finalprojectforb.repository.roadmap.ContentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class UploadService {
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-    @Value("${cloud.aws.region.static}")
-    private String region;
-    @Value("${cloud.aws.s3.dir}")
-    private String dir;
-    private final AmazonS3Client s3Client;
-
+public class ContentService {
+    private final S3Upload s3Upload;
     private final ContentRepository contentRepository;
     private final TokenProvider tokenProvider;
     //html upload
@@ -42,17 +30,21 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         Html htmlIdSet = new Html();
         htmlIdSet.getId(htmlId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        //프론트에서 null값 파일 줄 때 => 파일을 받긴 하되 blob으로 끝나는게 null값
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
+
+
         Content content = Content.builder()
                 .html(htmlIdSet)
                 .id(contentReqDto.getId())
@@ -65,14 +57,7 @@ public class UploadService {
                 .build();
         contentRepository.save(content);
 
-        return ResponseDto.success(
-                ContentResponseDto.builder()
-                        .id(content.getId())
-                        .thumbnail(content.getThumbnail())
-                        .title(content.getTitle())
-                        .link(content.getContentLink())
-                        .desc(content.getDescription())
-                        .build());
+        return ResponseDto.success("업로드가 완료되었습니다");
     }
 
     //css upload
@@ -84,16 +69,20 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         Css cssIdSet = new Css();
         cssIdSet.getId(cssId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
+
 
         Content content = Content.builder()
                 .css(cssIdSet)
@@ -119,14 +108,17 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         Js jsIdSet = new Js();
         jsIdSet.getId(jsId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
 
@@ -155,14 +147,17 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         React reactIdSet = new React();
         reactIdSet.getId(reactId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
 
@@ -190,14 +185,17 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         Java javaIdSet = new Java();
         javaIdSet.getId(javaId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
 
@@ -226,14 +224,17 @@ public class UploadService {
             return new ResponseDto<>(null, ErrorCode.EXPIRED_TOKEN);
         }
 
-        String image = getImage(file);
         Spring springIdSet = new Spring();
         springIdSet.getId(springId);
 
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
-        if (image.endsWith("blob")) {
+        String image = null;
+
+        if (file != null && !file.isEmpty()) {
+            image = s3Upload.uploadFiles(file, "thumbnail"); // dir name: images에 multifile 업로드
+        } else if (file == null) {
             image = null;
         }
 
@@ -251,23 +252,6 @@ public class UploadService {
 
         return ResponseDto.success("업로드가 완료되었습니다");
 
-    }
-
-
-    //이미지 업로드 함수
-    private String getImage(MultipartFile file) throws IOException {
-        String s3FileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
-
-        ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentLength(file.getSize());
-
-        s3Client.putObject(bucket, s3FileName, file.getInputStream(), objMeta);
-
-        String httpUrl = s3Client.getUrl(bucket, dir + s3FileName).toString();
-        //https://myspartabucket12.s3.ap-northeast-2.amazonaws.com/52af4048-2405-4531-b13d-c6a515896759-beach.jpg",
-        String temp = httpUrl.substring(httpUrl.lastIndexOf("/") + 1);
-        String answer = "https://s3." + region + ".amazonaws.com/" + bucket + "/" + temp;
-        return answer;
     }
 
     public Member validateMember(HttpServletRequest request) {

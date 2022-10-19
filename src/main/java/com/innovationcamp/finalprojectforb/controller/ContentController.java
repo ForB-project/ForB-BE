@@ -2,10 +2,12 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.roadmap.ContentReqDto;
-import com.innovationcamp.finalprojectforb.dto.roadmap.ContentResponseDto;
-import com.innovationcamp.finalprojectforb.service.UploadService;
+import com.innovationcamp.finalprojectforb.service.ContentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +15,9 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
-public class UploadController {
+public class ContentController {
 
-    private final UploadService uploadService;
+    private final ContentService contentService;
 
     //html upload
     @PutMapping("/api/roadmap/html/{htmlId}")
@@ -23,7 +25,7 @@ public class UploadController {
                                             @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                             @RequestPart(value = "file") MultipartFile file,
                                             HttpServletRequest request) throws IOException {
-        return uploadService.createHtmlContent(htmlId, contentReqDto, file, request);
+        return contentService.createHtmlContent(htmlId, contentReqDto, file, request);
     }
 
     //css upload
@@ -32,7 +34,7 @@ public class UploadController {
                                            @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                            @RequestPart(value = "file") MultipartFile file,
                                            HttpServletRequest request) throws IOException {
-        return uploadService.createCssContent(cssId, contentReqDto, file, request);
+        return contentService.createCssContent(cssId, contentReqDto, file, request);
     }
 
     //js upload
@@ -41,7 +43,7 @@ public class UploadController {
                                           @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                           @RequestPart(value = "file") MultipartFile file,
                                           HttpServletRequest request) throws IOException {
-        return uploadService.createJsContent(jsId, contentReqDto, file, request);
+        return contentService.createJsContent(jsId, contentReqDto, file, request);
     }
 
     //react upload
@@ -50,7 +52,7 @@ public class UploadController {
                                              @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                              @RequestPart(value = "file") MultipartFile file,
                                              HttpServletRequest request) throws IOException {
-        return uploadService.createReactContent(reactId, contentReqDto, file, request);
+        return contentService.createReactContent(reactId, contentReqDto, file, request);
     }
 
     //java upload
@@ -59,7 +61,7 @@ public class UploadController {
                                             @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                             @RequestPart(value = "file") MultipartFile file,
                                             HttpServletRequest request) throws IOException {
-        return uploadService.createJavaContent(javaId, contentReqDto, file, request);
+        return contentService.createJavaContent(javaId, contentReqDto, file, request);
     }
 
     //spring upload
@@ -68,6 +70,6 @@ public class UploadController {
                                               @RequestPart(value = "contentReqDto") ContentReqDto contentReqDto,
                                               @RequestPart(value = "file") MultipartFile file,
                                               HttpServletRequest request) throws IOException {
-        return uploadService.createSpringContent(springId, contentReqDto, file, request);
+        return contentService.createSpringContent(springId, contentReqDto, file, request);
     }
 }
