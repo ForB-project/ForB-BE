@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -49,6 +46,22 @@ public class ChatRoomService {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
+        boolean existPubMember = chatRoomRepository.existsByMemberId(member.getId());
+        boolean existSubMember = chatMemberRepository.existsByMemberId(targetMemberId);
+        List<ChatRoom> test1 = chatRoomRepository.findByMemberId(member.getId());
+        List<ChatMember> test2 = chatMemberRepository.findByMemberId(targetMemberId);
+
+        // 이미 동일한 pub/sub 유저가 있다면 방 만들기 취소
+        if (existPubMember == true && existSubMember == true) {
+            for (ChatRoom chatRoom : test1) {
+                for (ChatMember chatMember : test2) {
+                    if (chatRoom.getId() == chatMember.getChatRoom().getId()) {
+                        return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
+                    }
+                }
+            }
+        }
+
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
@@ -60,12 +73,6 @@ public class ChatRoomService {
 
         ChatRoom chatRoomIdSet = new ChatRoom();
         chatRoomIdSet.getId(chatRoom.getId());
-
-        // pub유저가 생성한 방에 sub유저가 있는지
-        ChatMember findSubMember = chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), targetMemberId);
-        if (findSubMember != null) {
-            return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
-        }
 
         // 챗멤버 만들기 ( roomId + 수신(sub)Id )
         ChatMember chatMember = ChatMember.builder()
@@ -82,6 +89,7 @@ public class ChatRoomService {
                         .member(member.getNickname())
                         .build());
         return ResponseDto.success(chatRoomResDtos);
+
     }
 
     // 채팅유저 목록 불러오기
