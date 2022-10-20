@@ -91,12 +91,6 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     spring boot로 websocket을 개발하다보면 Session의 Connect / Disconnect 되는 시점을 알고 싶을 때가 있는데
     (사용자 동시 접속 리스트 관리 차원)
     */
-    public Member validateMember(String jwtToken) {
-        if (!tokenProvider.validateToken(jwtToken)) {
-            return null;
-        }
-        return tokenProvider.getMemberFromAuthentication();
-    }
 
     @Override
     public void postSend(Message message, MessageChannel channel, boolean sent) {

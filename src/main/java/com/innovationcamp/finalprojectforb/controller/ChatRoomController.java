@@ -2,10 +2,7 @@ package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.service.ChatRoomService;
-import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

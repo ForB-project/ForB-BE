@@ -7,7 +7,6 @@ import com.innovationcamp.finalprojectforb.dto.chat.ChatRequestDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
-import com.innovationcamp.finalprojectforb.model.chat.ChatMember;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
 import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
 import com.innovationcamp.finalprojectforb.repository.chat.ChatMessageRepository;
@@ -19,7 +18,6 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -69,7 +67,7 @@ public class ChatService {
         log.info("룸넘버 : " + message.getRoomId());
 
         //보낸 메세지 저장 (db바뀔때 timestamp 없애고 위의 값을 저장하는것으로 바꾸기)
-         ChatRoom chatRoomIdSet = new ChatRoom();
+        ChatRoom chatRoomIdSet = new ChatRoom();
         chatRoomIdSet.getId(chatRoom.getId());
 
         Member memberIdSet = new Member();
