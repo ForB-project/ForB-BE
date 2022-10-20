@@ -21,7 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(UserDetailsImpl::new)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
-
     public UserDetailsImpl loadUserById(Long id){
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + id));

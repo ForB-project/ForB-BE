@@ -1,7 +1,6 @@
 package com.innovationcamp.finalprojectforb.dto;
 
 import com.innovationcamp.finalprojectforb.model.Comment;
-import com.innovationcamp.finalprojectforb.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +28,5 @@ public class CommentResponseDto {
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
     }
+
 }

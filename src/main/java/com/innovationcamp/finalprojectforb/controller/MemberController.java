@@ -26,7 +26,6 @@ public class MemberController {
     private final KakaoMemberService kakaoMemberService;
     private final GoogleMemberService googleMemberService;
     private final MemberService memberService;
-
     private final GoogleConfigUtils googleConfigUtils;
 
     // 로그인 폼으로 이동 ==> 백에서 인가코드 받기
@@ -42,7 +41,6 @@ public class MemberController {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
         return ResponseEntity.badRequest().build();
     }
 

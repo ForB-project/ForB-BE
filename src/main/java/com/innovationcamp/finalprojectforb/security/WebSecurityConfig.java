@@ -34,7 +34,6 @@ public class WebSecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CorsConfigurationSource corsConfigurationSource;
 
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // "/h2-console/**" -> 이 url 경로 : h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
@@ -81,4 +80,5 @@ public class WebSecurityConfig {
     public BCryptPasswordEncoder encodePassword() {
         return new BCryptPasswordEncoder();
     }
+
 }
