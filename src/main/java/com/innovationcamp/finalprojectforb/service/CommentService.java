@@ -59,6 +59,7 @@ public class CommentService {
                 CommentResponseDto.builder()
                         .postId(postId)
                         .id(comment.getId())
+                        .memberId(member.getId())
                         .nickname(member.getNickname())
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
@@ -76,6 +77,7 @@ public class CommentService {
         return ResponseDto.success(
                 CommentResponseDto.builder()
                         .id(comment.getId())
+                        .memberId(member.getId())
                         .nickname(member.getNickname())
                         .content(comment.getContent())
                         .createdAt(comment.getCreatedAt())
