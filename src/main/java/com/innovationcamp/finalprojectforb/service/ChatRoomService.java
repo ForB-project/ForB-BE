@@ -49,19 +49,6 @@ public class ChatRoomService {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        // 채팅방을 만들고 발행(pub)한 사람이 있는지
-        List<ChatRoom> findChatRoom = chatRoomRepository.findByMemberId(member.getId());
-        log.info("findChatRoom {}" + findChatRoom);
-
-        // 해당 채팅방을 수신(sub)하는 사람이 있는지
-        List<ChatMember> findChatMember = chatMemberRepository.findByMemberId(targetMemberId);
-        log.info("findChatMember {} " + findChatMember);
-
-        // 이미 동일한 pub/sub 유저가 있다면 방 만들기 취소
-        if (findChatRoom != null && !findChatRoom.isEmpty() && findChatMember != null && !findChatMember.isEmpty()) {
-            return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
-        }
-
         Member memberIdSet = new Member();
         memberIdSet.getId(member.getId());
 
@@ -73,6 +60,12 @@ public class ChatRoomService {
 
         ChatRoom chatRoomIdSet = new ChatRoom();
         chatRoomIdSet.getId(chatRoom.getId());
+
+        // pub유저가 생성한 방에 sub유저가 있는지
+        ChatMember findSubMember = chatMemberRepository.findByChatRoomIdAndMemberId(chatRoom.getId(), targetMemberId);
+        if (findSubMember != null) {
+            return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
+        }
 
         // 챗멤버 만들기 ( roomId + 수신(sub)Id )
         ChatMember chatMember = ChatMember.builder()
@@ -157,7 +150,7 @@ public class ChatRoomService {
         }
 
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(roomId);
-        if (chatRoom == null){
+        if (chatRoom == null) {
             return new ResponseDto<>(null, ErrorCode.NOTFOUND_ROOM);
         }
 

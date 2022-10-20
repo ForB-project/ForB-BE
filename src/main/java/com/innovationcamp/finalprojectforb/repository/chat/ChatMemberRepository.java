@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatMemberRepository extends JpaRepository<ChatMember, Long> {
-    List<ChatMember> findByMemberId(Long member);
     List<ChatMember> findAllByChatRoomId(Long chatRoomId);
     List<ChatMember> findAllByMemberId(Long chatRoomId);
     ChatMember findByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
+
 }

@@ -56,7 +56,7 @@ public class ChatService {
         }
         log.info("RoomId 가져오는지 : " + chatRoom.getId());//////////////////////////////////
 
-        String time = LocalDateTime.now().plusHours(8).format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 E요일 - a hh:mm "));
+        String time = LocalDateTime.now().plusHours(9).format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 E요일 - a hh:mm "));
         ChatMessageDto chatMessageDto = new ChatMessageDto(findMember.get().getNickname(), time);
         log.info("time이랑 member 가져오는지 : " + "시간 : " + time + "멤버닉네임 : " + findMember.get().getNickname());
         log.info("chatMessageDto 가져오는지 : " + chatMessageDto);
