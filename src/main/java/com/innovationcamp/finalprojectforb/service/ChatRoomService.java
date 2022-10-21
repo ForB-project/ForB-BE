@@ -46,16 +46,33 @@ public class ChatRoomService {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
 
-        boolean existPubMember = chatRoomRepository.existsByMemberId(member.getId());
-        boolean existSubMember = chatMemberRepository.existsByMemberId(targetMemberId);
-        List<ChatRoom> test1 = chatRoomRepository.findByMemberId(member.getId());
-        List<ChatMember> test2 = chatMemberRepository.findByMemberId(targetMemberId);
+        boolean existPubMember = chatRoomRepository.existsByMemberId(member.getId()); //먼저 말 건 사람
+        boolean existPubMember2 = chatRoomRepository.existsByMemberId(targetMemberId); //먼저 말 건 사람
 
-        // 이미 동일한 pub/sub 유저가 있다면 방 만들기 취소
+        boolean existSubMember = chatMemberRepository.existsByMemberId(targetMemberId); //말걸음을 당한사람
+        boolean existSubMember2 = chatMemberRepository.existsByMemberId(member.getId()); //말걸음을 당한사람
+        List<ChatRoom> findPubRoom = chatRoomRepository.findByMemberId(member.getId());
+        List<ChatMember> findSubRoom = chatMemberRepository.findByMemberId(targetMemberId);
+
+        // 이미 동일한 채팅방!!에 pub/sub 유저가 있다면 방 만들기 취소 => 방만 체크
         if (existPubMember == true && existSubMember == true) {
-            for (ChatRoom chatRoom : test1) {
-                for (ChatMember chatMember : test2) {
+            for (ChatRoom chatRoom : findPubRoom) {
+                for (ChatMember chatMember : findSubRoom) {
                     if (chatRoom.getId() == chatMember.getChatRoom().getId()) {
+                        return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
+                    }
+                }
+            }
+        }
+
+        List<ChatRoom> findPubRoom2 = chatRoomRepository.findAll();
+        List<ChatMember> findSubRoom2 = chatMemberRepository.findAll();
+
+        // 이미 대화중인 사람하고 다시 대화하지 않기
+        if (existPubMember2 == true && existSubMember2 == true) {
+            for (ChatRoom chatRoom : findPubRoom2) {
+                for (ChatMember chatMember : findSubRoom2) {
+                    if (chatRoom.getMember().getId() == targetMemberId && chatMember.getMember().getId() == member.getId()) {
                         return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
                     }
                 }

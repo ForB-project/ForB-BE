@@ -1,6 +1,14 @@
 package com.innovationcamp.finalprojectforb.config;
 
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.chat.ChatIn;
+import com.innovationcamp.finalprojectforb.model.chat.ChatOut;
+import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
+import com.innovationcamp.finalprojectforb.repository.MemberRepository;
+import com.innovationcamp.finalprojectforb.repository.chat.ChatInRepository;
+import com.innovationcamp.finalprojectforb.repository.chat.ChatOutRepository;
+import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.Message;
@@ -16,6 +24,7 @@ import java.util.Optional;
 @Component
 public class FilterChannelInterceptor implements ChannelInterceptor {
     private final TokenProvider tokenProvider;
+
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -76,13 +85,6 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 
-    //    @EventListener(SessionConnectEvent.class)
-//    public void onConnect(SessionConnectEvent event){
-//        String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
-//        String userId = event.getMessage().getHeaders().get("nativeHeaders").toString().split("User=\\[")[1].split("]")[0];
-//
-//        sessions.put(sessionId, Integer.valueOf(userId));
-//    }
     /*
     spring boot로 websocket을 개발하다보면 Session의 Connect / Disconnect 되는 시점을 알고 싶을 때가 있는데
     (사용자 동시 접속 리스트 관리 차원)
