@@ -127,6 +127,7 @@ public class ChatRoomService {
                         ChatMemberListResDto.builder()
                                 .roomId(chatMemberList.getChatRoom().getId())
                                 .subMember(chatMemberList.getMember().getNickname())
+                                .pubMember(member.getNickname())
                                 .build());
             }
         }
@@ -136,12 +137,15 @@ public class ChatRoomService {
             List<ChatRoom> chatList = chatRoomRepository.findAllById(Collections.singleton(room.getChatRoom().getId()));
             for (ChatRoom chatRoomList : chatList) {
                 chatMemberListResDtoList.add(
-                        ChatMemberListResDto.builder()
-                                .roomId(chatRoomList.getId())
-                                .pubMember(chatRoomList.getMember().getNickname())
-                                .build());
-            }
+                            ChatMemberListResDto.builder()
+                                    .roomId(chatRoomList.getId())
+                                    .subMember(member.getNickname())
+                                    .pubMember(chatRoomList.getMember().getNickname())
+                                    .build());
+                }
+
         }
+
         return ResponseDto.success(chatMemberListResDtoList);
     }
 
