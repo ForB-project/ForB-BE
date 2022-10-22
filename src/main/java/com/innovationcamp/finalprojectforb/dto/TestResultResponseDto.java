@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class TestResultResponseDto {
     private Long id;
     private String stackType;
-    private String title;
+    private String title1;
+    private String title2;
     private String description1;
     private String description2;
 
