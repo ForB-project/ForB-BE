@@ -5,7 +5,6 @@ import com.innovationcamp.finalprojectforb.dto.PostRequestDto;
 import com.innovationcamp.finalprojectforb.dto.PostResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.exception.CustomException;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Comment;
 import com.innovationcamp.finalprojectforb.model.Member;
@@ -48,6 +47,9 @@ public class PostService {
     public ResponseDto<PostResponseDto> getPost(Long postId, HttpServletRequest request) {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         Post post = isPresentPost(postId);
+        if (post == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
 
         for (Comment comment : post.getComments()) {
             CommentResponseDto commentResponseDto = CommentResponseDto.builder()
@@ -91,12 +93,16 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member, MultipartFile image) throws IOException {
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Member member, MultipartFile image) {
         //변수 초기화
         String postImage = null;
 
         if (image != null && !image.isEmpty()) {
+            try {
                 postImage = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
         } else if (image == null) {
             postImage = null;
         }
@@ -117,15 +123,17 @@ public class PostService {
     }
 
     @Transactional
-    public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto requestDto, Member member, MultipartFile image) throws IOException {
+    public ResponseDto<PostResponseDto> updatePost(Long postId, PostRequestDto requestDto, Member member, MultipartFile image) {
         Post post = isPresentPost(postId);
-        Post postFindById = postRepository.findPostById(postId);
-
-        if (!Objects.equals(post.getMember().getId(), member.getId())) {
-            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+        if (post == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }
 
-        String postImage = postFindById.getPostImage();
+        if (!Objects.equals(post.getMember().getId(), member.getId())) {
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        String postImage = post.getPostImage();
 
         if (postImage != null) {
             if (image == null || image.isEmpty()) {
@@ -164,10 +172,14 @@ public class PostService {
                         .build());
     }
 
-    public void deletePost(Long postId, Member member) {
+    public ResponseDto<String> deletePost(Long postId, Member member) {
         Post post = isPresentPost(postId);
+        if (post == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
+
         if (!Objects.equals(post.getMember().getId(), member.getId())) {
-            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
         }
 
         String postImage = post.getPostImage();
@@ -176,6 +188,7 @@ public class PostService {
             s3Upload.fileDelete(postImage);
         }
         postRepository.delete(post);
+        return new ResponseDto<>("delete success");
     }
 
     public Post isPresentPost(Long id) {
