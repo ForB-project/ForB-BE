@@ -1,14 +1,6 @@
 package com.innovationcamp.finalprojectforb.config;
 
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
-import com.innovationcamp.finalprojectforb.model.Member;
-import com.innovationcamp.finalprojectforb.model.chat.ChatIn;
-import com.innovationcamp.finalprojectforb.model.chat.ChatOut;
-import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
-import com.innovationcamp.finalprojectforb.repository.MemberRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatInRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatOutRepository;
-import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.Message;
