@@ -33,15 +33,6 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
 
-    //destination정보에서 roomId 추출
-    public String getRoomId(String destination) {
-        int lastIndex = destination.lastIndexOf('/');
-        if (lastIndex != 1)
-            return destination.substring(lastIndex + 1);
-        else
-            return "";
-    }
-
     // 메세지 보내기
     @Transactional
     public ResponseDto<?> sendMessage(ChatRequestDto message, String token) {
