@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -27,9 +26,6 @@ public class CommentController {
         List<CommentResponseDto> commentResponseDtoList;
         try {
             commentResponseDtoList = commentService.getAllComment();
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -38,21 +34,16 @@ public class CommentController {
     }
 
     @GetMapping("/api/comment/{postId}")
-    public ResponseDto<List<CommentResponseDto>> getComment(@PathVariable Long postId,
+    public ResponseDto<?> getComment(@PathVariable Long postId,
                                                       @RequestParam("page") int page,
                                                       @RequestParam("size") int size) {
-        List<CommentResponseDto> commentResponseDtoList;
         page = page - 1;
         try {
-            commentResponseDtoList = commentService.getComment(postId, page, size);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+            return commentService.getComment(postId, page, size);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
-        return new ResponseDto<>(commentResponseDtoList);
     }
 
 
@@ -63,9 +54,6 @@ public class CommentController {
         try {
             Member member = userDetails.getMember();
             return commentService.createComment(postId, requestDto, member);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -79,9 +67,6 @@ public class CommentController {
         try {
             Member member = userDetails.getMember();
             return commentService.updateComment(commentId, requestDto, member);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -92,15 +77,10 @@ public class CommentController {
     public ResponseDto<String> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             Member member = userDetails.getMember();
-            commentService.deleteComment(commentId, member);
-        }catch (EntityNotFoundException e){
+            return commentService.deleteComment(commentId, member);
+        } catch (Exception e) {
             log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
+            return new ResponseDto<>(null, ErrorCode.INVALID_ERROR);
         }
-        return new ResponseDto<>("delete success");
     }
-
 }

@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -32,9 +31,6 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size);
         try {
             return postService.getAllPost(pageable);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -45,9 +41,6 @@ public class PostController {
     public ResponseDto<PostResponseDto> getPost(@PathVariable Long postId, HttpServletRequest request) {
         try {
             return postService.getPost(postId,request);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -62,9 +55,6 @@ public class PostController {
         Pageable pageable = PageRequest.of(page, size);
         try {
             return postService.searchPost(keyword, pageable);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -78,9 +68,6 @@ public class PostController {
         try {
             Member member = userDetails.getMember();
             return postService.createPost(requestDto, member, image);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -95,9 +82,6 @@ public class PostController {
         try {
             Member member = userDetails.getMember();
             return postService.updatePost(postId, requestDto, member, image);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
@@ -108,15 +92,10 @@ public class PostController {
     public ResponseDto<String> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             Member member = userDetails.getMember();
-            postService.deletePost(postId, member);
-        }catch (EntityNotFoundException e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+            return postService.deletePost(postId, member);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
-        return new ResponseDto<>("delete success");
     }
-
 }

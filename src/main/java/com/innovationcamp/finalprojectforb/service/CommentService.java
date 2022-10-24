@@ -4,7 +4,6 @@ import com.innovationcamp.finalprojectforb.dto.CommentRequestDto;
 import com.innovationcamp.finalprojectforb.dto.CommentResponseDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.exception.CustomException;
 import com.innovationcamp.finalprojectforb.model.Comment;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Post;
@@ -38,7 +37,11 @@ public class CommentService {
         return commentResponseDtoList;
     }
 
-    public List<CommentResponseDto> getComment(Long postId, int page, int size) {
+    public ResponseDto<?> getComment(Long postId, int page, int size) {
+        Post post = isPresentPost(postId);
+        if (post == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
         Pageable pageable = PageRequest.of(page, size);
         List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId, pageable);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
@@ -46,12 +49,15 @@ public class CommentService {
         for (Comment comment : commentList) {
             commentResponseDtoList.add(new CommentResponseDto(comment));
         }
-        return commentResponseDtoList;
+        return ResponseDto.success(commentResponseDtoList);
     }
 
     @Transactional
     public ResponseDto<CommentResponseDto> createComment(Long postId, CommentRequestDto requestDto, Member member) {
         Post post = isPresentPost(postId);
+        if (post == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
         Comment comment = new Comment(requestDto, member, post);
         commentRepository.save(comment);
         post.updateCommentCount(true);
@@ -69,8 +75,11 @@ public class CommentService {
     @Transactional
     public ResponseDto<CommentResponseDto>updateComment(Long commentId, CommentRequestDto requestDto, Member member) {
         Comment comment = isPresentComment(commentId);
+        if (comment == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
-            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
         }
         comment.update(requestDto);
         comment = commentRepository.save(comment);
@@ -85,14 +94,18 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Member member) {
+    public ResponseDto<String> deleteComment(Long commentId, Member member) {
         Comment comment = isPresentComment(commentId);
+        if (comment == null) {
+            return new ResponseDto<>(null, ErrorCode.ENTITY_NOT_FOUND);
+        }
         if (!Objects.equals(comment.getMember().getId(), member.getId())) {
-            throw new CustomException(ErrorCode.NOT_SAME_MEMBER);
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
         }
         commentRepository.delete(comment);
         Post post = comment.getPost();
         post.updateCommentCount(false);
+        return new ResponseDto<>("delete success");
     }
 
     public Post isPresentPost(Long id) {

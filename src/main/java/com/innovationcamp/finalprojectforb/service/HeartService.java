@@ -86,7 +86,7 @@ public class HeartService {
 
         Member member = validateMember(request);
         if (null == member) {
-            return new ResponseDto<>(null,ErrorCode.BAD_TOKEN_REQUEST);
+            return new ResponseDto<>(null,ErrorCode.MEMBER_NOT_FOUND);
         }
 
         Post post = isPresentPost(postId);
