@@ -45,25 +45,8 @@ public class ChatRoomService {
         if (member == null) {
             return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
         }
-
-        boolean existPubMember = chatRoomRepository.existsByMemberId(member.getId()); //먼저 말 건 사람
         boolean existPubMember2 = chatRoomRepository.existsByMemberId(targetMemberId); //먼저 말 건 사람
-
-        boolean existSubMember = chatMemberRepository.existsByMemberId(targetMemberId); //말걸음을 당한사람
         boolean existSubMember2 = chatMemberRepository.existsByMemberId(member.getId()); //말걸음을 당한사람
-        List<ChatRoom> findPubRoom = chatRoomRepository.findByMemberId(member.getId());
-        List<ChatMember> findSubRoom = chatMemberRepository.findByMemberId(targetMemberId);
-
-        // 이미 동일한 채팅방!!에 pub/sub 유저가 있다면 방 만들기 취소 => 방만 체크
-        if (existPubMember == true && existSubMember == true) {
-            for (ChatRoom chatRoom : findPubRoom) {
-                for (ChatMember chatMember : findSubRoom) {
-                    if (chatRoom.getId() == chatMember.getChatRoom().getId()) {
-                        return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
-                    }
-                }
-            }
-        }
 
         List<ChatRoom> findPubRoom2 = chatRoomRepository.findAll();
         List<ChatMember> findSubRoom2 = chatMemberRepository.findAll();
@@ -73,6 +56,7 @@ public class ChatRoomService {
             for (ChatRoom chatRoom : findPubRoom2) {
                 for (ChatMember chatMember : findSubRoom2) {
                     if (chatRoom.getMember().getId() == targetMemberId && chatMember.getMember().getId() == member.getId()) {
+                        if (chatRoom.getId() == chatMember.getChatRoom().getId())
                         return new ResponseDto<>(null, ErrorCode.DUPLICATE_ROOM);
                     }
                 }

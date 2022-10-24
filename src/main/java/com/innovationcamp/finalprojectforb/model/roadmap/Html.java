@@ -1,6 +1,5 @@
 package com.innovationcamp.finalprojectforb.model.roadmap;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;

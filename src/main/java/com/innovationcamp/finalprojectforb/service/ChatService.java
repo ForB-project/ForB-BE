@@ -33,11 +33,19 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
 
+    //destination정보에서 roomId 추출
+    public String getRoomId(String destination) {
+        int lastIndex = destination.lastIndexOf('/');
+        if (lastIndex != 1)
+            return destination.substring(lastIndex + 1);
+        else
+            return "";
+    }
+
     // 메세지 보내기
     @Transactional
     public ResponseDto<?> sendMessage(ChatRequestDto message, String token) {
         log.info("서비스단 : 토큰 잘 넘어오는지 : " + token);
-
         // 토큰으로 유저찾기
         String memberEmail = tokenProvider.getAuthenticationUsername(token);
 
@@ -54,15 +62,15 @@ public class ChatService {
         if (chatRoom == null) {
             return new ResponseDto<>(null, ErrorCode.NOTFOUND_ROOM);
         }
-        log.info("RoomId 가져오는지 : " + chatRoom.getId());//////////////////////////////////
+        log.info("RoomId 가져오는지 : " + chatRoom.getId());
 
         String time = LocalDateTime.now().plusHours(9).format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 E요일 - a hh:mm "));
         ChatMessageDto chatMessageDto = new ChatMessageDto(findMember.get().getNickname(), time);
         log.info("time이랑 member 가져오는지 : " + "시간 : " + time + "멤버닉네임 : " + findMember.get().getNickname());
         log.info("chatMessageDto 가져오는지 : " + chatMessageDto);
 
-        // 메세지 보내기///////////////////////////////////////////////
-        messageTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);  // 오케이
+
+        messageTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
         log.info("메시지 : " + message.getMessage());
         log.info("룸넘버 : " + message.getRoomId());
 
@@ -80,11 +88,6 @@ public class ChatService {
                 .member(memberIdSet)
                 .sendTime(chatMessageDto.getSendTime())
                 .build();
-        log.info("chatMessage 잘 만들어지는지 : " + message.getMessage()); // null
-        log.info("chatMessage 잘 만들어지는지 : " + chatRoomIdSet);
-        log.info("chatMessage 잘 만들어지는지 : " + findMember.get().getNickname()); // 무제
-        log.info("chatMessage 잘 만들어지는지 : " + memberIdSet);
-        log.info("chatMessage 잘 만들어지는지 : " + chatMessage.getSendTime()); // 요일 나옴
         chatMessageRepository.save(chatMessage);
 
         return ResponseDto.success("메세지가 보내졌습니다.");

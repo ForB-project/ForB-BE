@@ -1,7 +1,5 @@
 package com.innovationcamp.finalprojectforb.model.chat;
 
-
-import com.innovationcamp.finalprojectforb.dto.chat.ChatRequestDto;
 import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.Timestamped;
 import lombok.Getter;

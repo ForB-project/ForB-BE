@@ -1,14 +1,6 @@
 package com.innovationcamp.finalprojectforb.config;
 
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
-import com.innovationcamp.finalprojectforb.model.Member;
-import com.innovationcamp.finalprojectforb.model.chat.ChatIn;
-import com.innovationcamp.finalprojectforb.model.chat.ChatOut;
-import com.innovationcamp.finalprojectforb.model.chat.ChatRoom;
-import com.innovationcamp.finalprojectforb.repository.MemberRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatInRepository;
-import com.innovationcamp.finalprojectforb.repository.chat.ChatOutRepository;
-import com.innovationcamp.finalprojectforb.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.Message;
@@ -30,43 +22,8 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         //stomp헤더에서 토큰 가져오기 : 클라이언트단에서 웹 소켓 요청시 헤더값에 토큰검증값을 얻을수 있다.
         //StompHeaderAccessor 를 통해서 세션의 데이터를 얻어올 수 있다(각종 웹소켓 관련 정보)
+
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        /*
-        스톰프 헤더에서 받아지는 값 예시
-        StompHeaderAccessor [
-        headers={simpMessageType=MESSAGE,
-        stompCommand=SEND,
-        nativeHeaders={destination=[/pub/chat/message],
-        content-length=[28]},
-        simpSessionAttributes={},
-        simpHeartbeat=[J@5179bc2f, lookupDestination=/chat/message,
-        simpSessionId=ce8ed936-93ea-d472-0d0e-99e8eab260e3,
-        simpDestination=/pub/chat/message}]
-        -----------------------------------------------
-         StompHeaderAccessor [
-         headers={simpMessageType=MESSAGE,
-         stompCommand=SEND,
-         nativeHeaders={destination=[/pub/chat/message],
-         Authorization=[eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3cGZoMTg4QGdtYWlsLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NjU4Mzc0Mjl9.BZZPhByoqxPuzCQIIgiHlxZwIb1P5pv5rMrMnew7B8Q],
-         content-length=[28]},
-         simpSessionAttributes={},
-         simpHeartbeat=[J@510a605b,
-         lookupDestination=/chat/message,
-         simpSessionId=0643ee26-5bfd-f06b-1d9e-997e1
-
-         ---------------------------------------------
-          StompHeaderAccessor [
-          headers={simpMessageType=MESSAGE,
-          stompCommand=SEND,
-          nativeHeaders={destination=[/pub/chat/message],
-          Authorization=[eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3cGZoMTg4QGdtYWlsLmNvbSIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE2NjU5ODgzNjR9.7dqamy0BekInyLc8a8JYFHVwA-byH1i_tVKCfrzlpho],
-          content-length=[28]},
-          simpSessionAttributes={},
-          simpHeartbeat=[J@38564888, lookupDestination=/chat/message,
-          simpSessionId=3763baa7-1910-aa9c-01a8-c334519f5110,
-          simpDestination=/pub/chat/message}]
-         */
-
         //StompCommand.CONNECT : command로 connect를 시도할 때 로그인 여부 확인
         //첫 연결 시도에만 사용자를 인증하고 이후엔 저장해둔 정보를 사용할 것이므로 getCommand()로 연결 시도인지 확인한다
         if (StompCommand.CONNECT == accessor.getCommand()) { // websocket 연결요청
@@ -89,7 +46,6 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     spring boot로 websocket을 개발하다보면 Session의 Connect / Disconnect 되는 시점을 알고 싶을 때가 있는데
     (사용자 동시 접속 리스트 관리 차원)
     */
-
     @Override
     public void postSend(Message message, MessageChannel channel, boolean sent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -106,24 +62,4 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
                 break;
         }
     }
-
-//    @Override
-//    public void postSend(Message message, MessageChannel channel, boolean sent) {
-//        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-//        String sessionId = accessor.getSessionId();
-//        switch (accessor.getCommand()) {
-//            case CONNECT:
-//                // 유저가 Websocket으로 connect()를 한 뒤 호출됨
-//
-//                break;
-//            case DISCONNECT:
-//                log.info("DISCONNECT");
-//                log.info("sessionId: {}", sessionId);
-//                log.info("channel:{}", channel);
-//                // 유저가 Websocket으로 disconnect() 를 한 뒤 호출됨 or 세션이 끊어졌을 때 발생함(페이지 이동~ 브라우저 닫기 등)
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 }

@@ -1,8 +1,6 @@
 package com.innovationcamp.finalprojectforb.controller;
 
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
-import com.innovationcamp.finalprojectforb.enums.ErrorCode;
-import com.innovationcamp.finalprojectforb.model.roadmap.Content;
 import com.innovationcamp.finalprojectforb.service.RoadMapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -135,38 +135,5 @@ public class TokenProvider {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
-    /*
-     * Jwt Token을 복호화 하여 이름을 얻는다.
-     */
-    public String getUserNameFromJwt(String token){
-        return getClaims(token).getBody().getId();
-    }
-
-    /*
-     * Jwt Token의 유효성을 체크한다.
-     */
-    public boolean validateStompToken(String token){
-    return this.getClaims(token) != null; }
-
-    private Jws<Claims> getClaims(String token){
-        try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SignatureException ex){
-            log.error("Invalid JWT signature");
-            throw ex;
-        } catch (MalformedJwtException ex){
-            log.error("Invalid JWT token");
-            throw ex;
-        } catch (ExpiredJwtException ex){
-            log.error("Expired JWT token");
-            throw ex;
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-            throw ex;
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
-            throw ex;
-        }
-    }
 }
 
