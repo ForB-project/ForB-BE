@@ -19,7 +19,7 @@ public class ChatRoomController {
     }
 
     // 채팅유저 목록 불러오기
-    @GetMapping("/api/chat/Lists")
+    @GetMapping("/api/chat/list")
     public ResponseDto<?> getChatMembers(HttpServletRequest request){
         return chatRoomService.getChatMembers(request);
     }
