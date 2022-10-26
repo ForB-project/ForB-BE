@@ -48,7 +48,7 @@ public class PostController {
     }
 
     @GetMapping("/api/post/search")
-    public ResponseDto<?> searchLecture(@RequestParam(value = "keyword") String keyword,
+    public ResponseDto<?> searchPost(@RequestParam(value = "keyword") String keyword,
                                         @RequestParam("page") int page,
                                         @RequestParam("size") int size) {
         page = page -1;
