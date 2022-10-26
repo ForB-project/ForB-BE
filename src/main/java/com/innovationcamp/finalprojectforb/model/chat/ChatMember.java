@@ -24,6 +24,7 @@ public class ChatMember extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    //발신자가 만든 방
     @JoinColumn(name = "chat_room_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;

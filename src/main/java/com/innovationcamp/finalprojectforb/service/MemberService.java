@@ -25,7 +25,7 @@ public class MemberService {
 
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
-        if(!memberRepository.findByEmail(requestDto.getEmail()).isEmpty()) {
+        if (!memberRepository.findByEmail(requestDto.getEmail()).isEmpty()) {
             return new ResponseDto<>(null, ErrorCode.DUPLICATED_EMAIL);
         }
         String[] nickname = requestDto.getEmail().split("@");
@@ -45,12 +45,12 @@ public class MemberService {
     public ResponseDto<?> loginMember(MemberRequestDto requestDto, HttpServletResponse response) {
         Member member = isPresentMember(requestDto.getEmail());
 
-        if(null == member) {
-            return new ResponseDto<>(null,ErrorCode.EMAIL_NOT_FOUND);
+        if (null == member) {
+            return new ResponseDto<>(null, ErrorCode.EMAIL_NOT_FOUND);
         }
 
-        if(!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-            return new ResponseDto<>(null,ErrorCode.PASSWORDS_NOT_MATCHED);
+        if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
+            return new ResponseDto<>(null, ErrorCode.PASSWORDS_NOT_MATCHED);
         }
 
         putToken(member, response);
@@ -106,9 +106,15 @@ public class MemberService {
             return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
         }
         Member member = memberRepository.findMemberById(existMember.getId());
-        member.updateNickname(requestDto);
-        member = memberRepository.save(member);
 
+        //닉네임 중복 불가
+        boolean checkNicknameDuplicate = memberRepository.existsMemberByNickname(requestDto.getNickname());
+        if (checkNicknameDuplicate == true){
+            return new ResponseDto<>(null, ErrorCode.DUPLICATE_NICKNAME);
+        }else {
+            member.updateNickname(requestDto);
+            member = memberRepository.save(member);
+        }
         MemberResponseDto responseDto = MemberResponseDto.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())

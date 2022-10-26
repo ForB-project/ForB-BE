@@ -23,7 +23,8 @@ public enum ErrorCode {
     //채팅 관련 오류
     NOTFOUND_ROOM("NOTFOUND_ROOM", "Room id가 잘못되었습니다."),
     INVALID_MEMBER("INVALID_MEMBER", "해당 유저는 권한이 없습니다."),
-    DUPLICATE_ROOM("DUPLICATE_ROOM", "이미 참여한 채팅방입니다.");
+    DUPLICATE_ROOM("DUPLICATE_ROOM", "이미 참여한 채팅방입니다."),
+    DUPLICATE_NICKNAME("DUPLICATE_NICKNAME", "이미 존재하는 닉네임입니다.");
 
     private final String code;
     private final String message;

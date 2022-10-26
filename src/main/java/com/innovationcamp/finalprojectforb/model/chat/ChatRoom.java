@@ -15,13 +15,12 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatRoom extends Timestamped {
-
     // 채팅방 번호
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 챗 멤버 객체
+    // 수신자
     @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMember> chatMember;
 
