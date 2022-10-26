@@ -39,10 +39,10 @@ public class TestResultService {
         };
 
         String[] title2_List = {
-                "'가장 화려하고 눈에 띄는 결과물을 만들어내는 개발자'",
-                "'가장 독창적이고 효율적인 로직을 작성하는 개발자'",
-                "'가장 사용자에게 친화적이고 편리한 서비스를 고민하는 개발자'",
-                "'가장 기본에 충실하고 지능적인 로직을 생각해내는 개발자'"
+                "'가장 화려하고 눈에 띄는 결과물을 만들어내는 프론트엔드 개발자'",
+                "'가장 독창적이고 효율적인 로직을 작성하는 백엔드 개발자'",
+                "'가장 사용자에게 친화적이고 편리한 서비스를 고민하는 프론트엔드 개발자'",
+                "'가장 기본에 충실하고 지능적인 로직을 생각해내는 백엔드 개발자'"
         };
 
         String[] description1_List = {
@@ -75,7 +75,6 @@ public class TestResultService {
                 String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
                 List<TestResult> testResultList = testResultRepository.findByStackType(GH);
                 List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
-
                 return ResponseDto.success(testResultResponseDtoList);
 
             } else {
@@ -88,25 +87,21 @@ public class TestResultService {
             Member member = validateMember(request);
             if (Objects.equals(type, "F")) {
                 String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
-                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
                 member.saveStackType(GH);
                 memberRepository.save(member);
+                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
                 List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
-
                 return ResponseDto.success(testResultResponseDtoList);
 
             } else {
                 String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
-                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
                 member.saveStackType(RS);
                 memberRepository.save(member);
+                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
                 List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
-
                 return ResponseDto.success(testResultResponseDtoList);
             }
-
         }
-
     }
 
     public Member validateMember(HttpServletRequest request) {
@@ -131,4 +126,5 @@ public class TestResultService {
         }
         return responseDtoList;
     }
+
 }
