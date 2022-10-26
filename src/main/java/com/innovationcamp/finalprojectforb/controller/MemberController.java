@@ -3,6 +3,7 @@ package com.innovationcamp.finalprojectforb.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.innovationcamp.finalprojectforb.config.GoogleConfigUtils;
 import com.innovationcamp.finalprojectforb.dto.MemberRequestDto;
+import com.innovationcamp.finalprojectforb.dto.NicknameResDto;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.service.GoogleMemberService;
@@ -72,6 +73,11 @@ public class MemberController {
     @PostMapping("api/member/stackType")
     public ResponseDto<?> saveStackType(@RequestBody StackTypeRequestDto requestDto, HttpServletRequest request) {
         return memberService.saveStackType(requestDto, request);
+    }
+
+    @PutMapping("/api/member/nickname")
+    public ResponseDto<?> updateNickname(@RequestBody NicknameResDto requestDto, HttpServletRequest request) {
+        return memberService.updateNickname(requestDto, request);
     }
 
 }

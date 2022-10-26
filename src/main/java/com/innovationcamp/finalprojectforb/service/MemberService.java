@@ -97,6 +97,28 @@ public class MemberService {
 
     }
 
+    public ResponseDto<?> updateNickname(NicknameResDto requestDto, HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+        }
+        Member existMember = tokenProvider.getMemberFromAuthentication();
+        if (null == existMember) {
+            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
+        }
+        Member member = memberRepository.findMemberById(existMember.getId());
+        member.updateNickname(requestDto);
+        member = memberRepository.save(member);
+
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .stackType(member.getStackType())
+                .authority(member.getAuthority()).build();
+
+        return new ResponseDto<>(responseDto);
+    }
+
+
     @Transactional(readOnly = true)
     public Member isPresentMember(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
@@ -110,4 +132,5 @@ public class MemberService {
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
+
 }
