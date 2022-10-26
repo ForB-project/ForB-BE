@@ -99,12 +99,10 @@ public class PostService {
 
         if (image != null && !image.isEmpty()) {
             try {
-                postImage = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
+                postImage = s3Upload.uploadFiles(image, "images");
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
-        } else if (image == null) {
-            postImage = null;
         }
 
         Post post = new Post(requestDto, member,postImage);
@@ -135,21 +133,21 @@ public class PostService {
 
         String postImage = post.getPostImage();
 
-        if (postImage != null) {
-            if (image == null || image.isEmpty()) {
-                postImage = post.getPostImage();
-            } else if (!image.isEmpty()) {
+        if (postImage != null) { // 원래 사진이 있을 경우
+            if (image == null || image.isEmpty()) { // 입력 받은 사진이 없으면
+                postImage = post.getPostImage(); // 원래 사진 불러오기
+            } else if (!image.isEmpty()) { // 입력 받은 사진이 있으면
                 try {
-                    s3Upload.fileDelete(postImage);
-                    postImage = s3Upload.uploadFiles(image, "images");
+                    s3Upload.fileDelete(postImage); // 기존 파일 삭제 하고
+                    postImage = s3Upload.uploadFiles(image, "images"); // 입력 받은 사진 저장
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
             }
-        } else {
-            if (image == null || image.isEmpty()) {
+        } else { // 원래 사진이 없을 경우
+            if (image == null || image.isEmpty()) { // 입력 받은 사진이 없으면
                 postImage = null;
-            } else if (!image.isEmpty()) {
+            } else if (!image.isEmpty()) { // 입력 받은 사진이 있으면
                 try {
                     postImage = s3Upload.uploadFiles(image, "images");
                 } catch (IOException e) {
