@@ -60,7 +60,7 @@ public class S3Upload {
         }
     }
 
-    //변환
+    // MultipartFile형식의 이미지를 File의 형태로 변환
     private Optional<File> convert(MultipartFile file) throws IOException {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         File convertFile = new File(System.getProperty("user.dir") + "/" + now + ".jpg"); // 파일 변환
