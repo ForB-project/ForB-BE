@@ -35,9 +35,9 @@ public class PostService {
 
     public ResponseDto<?> getAllPost(Pageable pageable) {
         Page<Post> postPage = postRepository.findAllByOrderByCreatedAtDesc(pageable);
-        List<Post> postList = postPage.getContent();
+        List<Post> postList = postPage.getContent(); // slice 인터페이스의 메소드, 조회된 데이터 가져오기
         List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
-        Long postCount = postPage.getTotalElements();
+        Long postCount = postPage.getTotalElements(); // page 인터페이스의 메소드, 전체 데이터 수 가져오기
         HashMap<Object,Object> response = new HashMap<>();
         response.put("postList", postResponseDtoList);
         response.put("postCount", postCount);
