@@ -3,11 +3,15 @@ package com.innovationcamp.finalprojectforb.service;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultRequestDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultResponseDto;
+import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.TestResult;
+import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import com.innovationcamp.finalprojectforb.repository.TestResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +20,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TestResultService {
     private final TestResultRepository testResultRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     public void createDB2() {
         String[] stackType_List = {
@@ -59,48 +65,70 @@ public class TestResultService {
     }
 
 
-    public ResponseDto<?> result(TestResultRequestDto testResultRequestDto) {
+    public ResponseDto<?> result(TestResultRequestDto testResultRequestDto, HttpServletRequest request) {
         String type = testResultRequestDto.getType();
         int answerSum = testResultRequestDto.getAnswerSum();
 
-        if (Objects.equals(type, "F")) {
-            String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
-            List<TestResult> testResultList = testResultRepository.findByStackType(GH);
-            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken == null) {
+            if (Objects.equals(type, "F")) {
+                String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
+                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
 
-            for (TestResult testResult : testResultList) {
-                testResultResponseDtoList.add(
-                        TestResultResponseDto.builder()
-                                .id(testResult.getId())
-                                .stackType(testResult.getStackType())
-                                .title1(testResult.getTitle1())
-                                .title2(testResult.getTitle2())
-                                .description1(testResult.getDescription1())
-                                .description2(testResult.getDescription2())
-                                .build());
+                return ResponseDto.success(testResultResponseDtoList);
+
+            } else {
+                String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
+                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+                return ResponseDto.success(testResultResponseDtoList);
             }
-
-            return ResponseDto.success(testResultResponseDtoList);
-
         } else {
-            String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
-            List<TestResult> testResultList = testResultRepository.findByStackType(RS);
-            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+            Member member = validateMember(request);
+            if (Objects.equals(type, "F")) {
+                String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
+                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
+                member.saveStackType(GH);
+                memberRepository.save(member);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
 
-            for (TestResult testResult : testResultList) {
-                testResultResponseDtoList.add(
-                        TestResultResponseDto.builder()
-                                .id(testResult.getId())
-                                .stackType(testResult.getStackType())
-                                .title1(testResult.getTitle1())
-                                .title2(testResult.getTitle2())
-                                .description1(testResult.getDescription1())
-                                .description2(testResult.getDescription2())
-                                .build());
+                return ResponseDto.success(testResultResponseDtoList);
+
+            } else {
+                String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
+                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
+                member.saveStackType(RS);
+                memberRepository.save(member);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+
+                return ResponseDto.success(testResultResponseDtoList);
             }
-
-            return ResponseDto.success(testResultResponseDtoList);
 
         }
+
+    }
+
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+
+    private static List<TestResultResponseDto> testResultResponseDtoList(List<TestResult> testResultList) {
+        List<TestResultResponseDto> responseDtoList = new ArrayList<>();
+        for (TestResult testResult : testResultList) {
+            TestResultResponseDto responseDto = TestResultResponseDto.builder()
+                    .id(testResult.getId())
+                    .stackType(testResult.getStackType())
+                    .title1(testResult.getTitle1())
+                    .title2(testResult.getTitle2())
+                    .description1(testResult.getDescription1())
+                    .description2(testResult.getDescription2())
+                    .build();
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
     }
 }

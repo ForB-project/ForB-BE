@@ -5,7 +5,9 @@ import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.enums.ErrorCode;
 import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
 import com.innovationcamp.finalprojectforb.model.Member;
+import com.innovationcamp.finalprojectforb.model.TestResult;
 import com.innovationcamp.finalprojectforb.repository.MemberRepository;
+import com.innovationcamp.finalprojectforb.repository.TestResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +26,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final TestResultRepository testResultRepository;
 
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
@@ -75,25 +80,25 @@ public class MemberService {
         return tokenProvider.deleteRefreshToken(member);
     }
 
-    public ResponseDto<?> saveStackType(StackTypeRequestDto requestDto, HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
+
+    public ResponseDto<?> getStackType(Member member) {
+        Member existMember = memberRepository.findMemberById(member.getId());
+        List<TestResult> testResultList = testResultRepository.findByStackType(existMember.getStackType());
+        List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+
+        for (TestResult testResult : testResultList) {
+            testResultResponseDtoList.add(
+                    TestResultResponseDto.builder()
+                            .id(testResult.getId())
+                            .stackType(testResult.getStackType())
+                            .title1(testResult.getTitle1())
+                            .title2(testResult.getTitle2())
+                            .description1(testResult.getDescription1())
+                            .description2(testResult.getDescription2())
+                            .build());
         }
-        Member existMember = tokenProvider.getMemberFromAuthentication();
-        if (null == existMember) {
-            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
-        }
 
-        Member member = memberRepository.findMemberById(existMember.getId());
-        member.saveStackType(requestDto);
-
-        MemberResponseDto responseDto = MemberResponseDto.builder()
-                .id(member.getId())
-                .nickname(member.getNickname())
-                .stackType(member.getStackType())
-                .authority(member.getAuthority()).build();
-
-        return new ResponseDto<>(responseDto);
+        return ResponseDto.success(testResultResponseDtoList);
 
     }
 
