@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -207,7 +206,6 @@ public class RoadMapDetailService {
         return ResponseDto.success(javaResponseDtoList);
     }
 
-
     //spring detail
     public ResponseDto<?> showRoadmapSpring(Long springId,
                                             int page,
@@ -242,7 +240,6 @@ public class RoadMapDetailService {
         return ResponseDto.success(springResponseDtoList);
     }
 
-
     private Html isPresentHtml(Long htmlId) {
         Optional<Html> optionalHtml = htmlRepository.findById(htmlId);
         return optionalHtml.orElse(null);
@@ -257,7 +254,6 @@ public class RoadMapDetailService {
         Optional<Js> optionalJs = jsRepository.findById(jsId);
         return optionalJs.orElse(null);
     }
-
 
     private React isPresentReact(Long reactId) {
         Optional<React> optionalReact = reactRepository.findById(reactId);
@@ -289,6 +285,7 @@ public class RoadMapDetailService {
         }
         return heartCheck;
     }
+
     private void makeContentList(Member member, Page<Content> contentList, List<ContentResponseDto> contentResponseDtoList) {
         for (Content content : contentList) {
             boolean heartCheck = isHeartCheck(member, content);

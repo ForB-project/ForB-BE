@@ -35,8 +35,8 @@ public class CommentController {
 
     @GetMapping("/api/comment/{postId}")
     public ResponseDto<?> getComment(@PathVariable Long postId,
-                                                      @RequestParam("page") int page,
-                                                      @RequestParam("size") int size) {
+                                     @RequestParam("page") int page,
+                                     @RequestParam("size") int size) {
         page = page - 1;
         try {
             return commentService.getComment(postId, page, size);
