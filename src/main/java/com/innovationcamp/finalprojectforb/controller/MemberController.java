@@ -42,7 +42,29 @@ public class MemberController {
 
     @PostMapping("/api/auth/member/logout")
     public ResponseDto<?> logout(HttpServletRequest request) {
-        return  memberService.logoutMember(request);
+        return memberService.logoutMember(request);
+    }
+
+    @GetMapping("api/member/stackType")
+    public ResponseDto<?> getStackType(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            Member member = userDetails.getMember();
+            return memberService.getStackType(member);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseDto<>(null, ErrorCode.INVALID_ERROR);
+        }
+    }
+
+    @PutMapping("/api/member/nickname")
+    public ResponseDto<?> updateNickname(@RequestBody NicknameResDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            Member member = userDetails.getMember();
+            return memberService.updateNickname(requestDto, member);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseDto<>(null, ErrorCode.INVALID_ERROR);
+        }
     }
 
     @PostMapping("/api/member/signup")
@@ -53,22 +75,6 @@ public class MemberController {
     @PostMapping("/api/member/login")
     public ResponseDto<?> login(@RequestBody MemberRequestDto requestDto, HttpServletResponse response) {
         return memberService.loginMember(requestDto, response);
-    }
-
-    @GetMapping("api/member/stackType")
-    public ResponseDto<?> getStackType(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try {
-            Member member = userDetails.getMember();
-            return memberService.getStackType(member);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return new ResponseDto<>(null, ErrorCode.INVALID_ERROR);
-        }
-    }
-
-    @PutMapping("/api/member/nickname")
-    public ResponseDto<?> updateNickname(@RequestBody NicknameResDto requestDto, HttpServletRequest request) {
-        return memberService.updateNickname(requestDto, request);
     }
 
 }

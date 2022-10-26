@@ -28,6 +28,47 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     private final TestResultRepository testResultRepository;
 
+    public ResponseDto<?> getStackType(Member member) {
+        Member existMember = memberRepository.findMemberById(member.getId());
+        List<TestResult> testResultList = testResultRepository.findByStackType(existMember.getStackType());
+        List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+
+        for (TestResult testResult : testResultList) {
+            testResultResponseDtoList.add(
+                    TestResultResponseDto.builder()
+                            .id(testResult.getId())
+                            .stackType(testResult.getStackType())
+                            .title1(testResult.getTitle1())
+                            .title2(testResult.getTitle2())
+                            .description1(testResult.getDescription1())
+                            .description2(testResult.getDescription2())
+                            .build());
+        }
+
+        return ResponseDto.success(testResultResponseDtoList);
+
+    }
+
+    public ResponseDto<?> updateNickname(NicknameResDto requestDto, Member member) {
+        Member existMember = memberRepository.findMemberById(member.getId());
+
+        //닉네임 중복 불가
+        boolean checkNicknameDuplicate = memberRepository.existsMemberByNickname(requestDto.getNickname());
+        if (checkNicknameDuplicate == true){
+            return new ResponseDto<>(null, ErrorCode.DUPLICATE_NICKNAME);
+        }else {
+            existMember.updateNickname(requestDto);
+            existMember = memberRepository.save(existMember);
+        }
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .id(existMember.getId())
+                .nickname(existMember.getNickname())
+                .stackType(existMember.getStackType())
+                .authority(existMember.getAuthority()).build();
+
+        return new ResponseDto<>(responseDto);
+    }
+
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
 
         if (!memberRepository.findByEmail(requestDto.getEmail()).isEmpty()) {
@@ -79,56 +120,6 @@ public class MemberService {
 
         return tokenProvider.deleteRefreshToken(member);
     }
-
-
-    public ResponseDto<?> getStackType(Member member) {
-        Member existMember = memberRepository.findMemberById(member.getId());
-        List<TestResult> testResultList = testResultRepository.findByStackType(existMember.getStackType());
-        List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
-
-        for (TestResult testResult : testResultList) {
-            testResultResponseDtoList.add(
-                    TestResultResponseDto.builder()
-                            .id(testResult.getId())
-                            .stackType(testResult.getStackType())
-                            .title1(testResult.getTitle1())
-                            .title2(testResult.getTitle2())
-                            .description1(testResult.getDescription1())
-                            .description2(testResult.getDescription2())
-                            .build());
-        }
-
-        return ResponseDto.success(testResultResponseDtoList);
-
-    }
-
-    public ResponseDto<?> updateNickname(NicknameResDto requestDto, HttpServletRequest request) {
-        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-            return new ResponseDto<>(null, ErrorCode.BAD_TOKEN_REQUEST);
-        }
-        Member existMember = tokenProvider.getMemberFromAuthentication();
-        if (null == existMember) {
-            return new ResponseDto<>(null, ErrorCode.MEMBER_NOT_FOUND);
-        }
-        Member member = memberRepository.findMemberById(existMember.getId());
-
-        //닉네임 중복 불가
-        boolean checkNicknameDuplicate = memberRepository.existsMemberByNickname(requestDto.getNickname());
-        if (checkNicknameDuplicate == true){
-            return new ResponseDto<>(null, ErrorCode.DUPLICATE_NICKNAME);
-        }else {
-            member.updateNickname(requestDto);
-            member = memberRepository.save(member);
-        }
-        MemberResponseDto responseDto = MemberResponseDto.builder()
-                .id(member.getId())
-                .nickname(member.getNickname())
-                .stackType(member.getStackType())
-                .authority(member.getAuthority()).build();
-
-        return new ResponseDto<>(responseDto);
-    }
-
 
     @Transactional(readOnly = true)
     public Member isPresentMember(String email) {

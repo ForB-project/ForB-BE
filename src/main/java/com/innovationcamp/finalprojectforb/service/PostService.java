@@ -35,9 +35,9 @@ public class PostService {
 
     public ResponseDto<?> getAllPost(Pageable pageable) {
         Page<Post> postPage = postRepository.findAllByOrderByCreatedAtDesc(pageable);
-        List<Post> postList = postPage.getContent();
+        List<Post> postList = postPage.getContent(); // slice 인터페이스의 메소드, 조회된 데이터 가져오기
         List<PostResponseDto> postResponseDtoList = postResponseDtoList(postList);
-        Long postCount = postPage.getTotalElements();
+        Long postCount = postPage.getTotalElements(); // page 인터페이스의 메소드, 전체 데이터 수 가져오기
         HashMap<Object,Object> response = new HashMap<>();
         response.put("postList", postResponseDtoList);
         response.put("postCount", postCount);
@@ -99,12 +99,10 @@ public class PostService {
 
         if (image != null && !image.isEmpty()) {
             try {
-                postImage = s3Upload.uploadFiles(image, "images"); // dir name: images에 multifile 업로드
+                postImage = s3Upload.uploadFiles(image, "images");
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
-        } else if (image == null) {
-            postImage = null;
         }
 
         Post post = new Post(requestDto, member,postImage);
@@ -135,21 +133,21 @@ public class PostService {
 
         String postImage = post.getPostImage();
 
-        if (postImage != null) {
-            if (image == null || image.isEmpty()) {
-                postImage = post.getPostImage();
-            } else if (!image.isEmpty()) {
+        if (postImage != null) { // 원래 사진이 있을 경우
+            if (image == null || image.isEmpty()) { // 입력 받은 사진이 없으면
+                postImage = post.getPostImage(); // 원래 사진 불러오기
+            } else if (!image.isEmpty()) { // 입력 받은 사진이 있으면
                 try {
-                    s3Upload.fileDelete(postImage);
-                    postImage = s3Upload.uploadFiles(image, "images");
+                    s3Upload.fileDelete(postImage); // 기존 파일 삭제 하고
+                    postImage = s3Upload.uploadFiles(image, "images"); // 입력 받은 사진 저장
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
             }
-        } else {
-            if (image == null || image.isEmpty()) {
+        } else { // 원래 사진이 없을 경우
+            if (image == null || image.isEmpty()) { // 입력 받은 사진이 없으면
                 postImage = null;
-            } else if (!image.isEmpty()) {
+            } else if (!image.isEmpty()) { // 입력 받은 사진이 있으면
                 try {
                     postImage = s3Upload.uploadFiles(image, "images");
                 } catch (IOException e) {

@@ -48,9 +48,9 @@ public class PostController {
     }
 
     @GetMapping("/api/post/search")
-    public ResponseDto<?> searchLecture(@RequestParam(value = "keyword") String keyword,
-                                                            @RequestParam("page") int page,
-                                                            @RequestParam("size") int size) {
+    public ResponseDto<?> searchPost(@RequestParam(value = "keyword") String keyword,
+                                     @RequestParam("page") int page,
+                                     @RequestParam("size") int size) {
         page = page -1;
         Pageable pageable = PageRequest.of(page, size);
         try {
@@ -98,4 +98,5 @@ public class PostController {
             return new ResponseDto<>(null,ErrorCode.INVALID_ERROR);
         }
     }
+
 }

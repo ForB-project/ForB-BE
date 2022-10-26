@@ -12,15 +12,13 @@ public class CodeController {
     private final CodeService codeService;
 
     @PostMapping("/api/firstCode")
-    public ResponseDto<String> showfirstCode(
-                                             @RequestBody CodeRequestDto codeRequestDto){
+    public ResponseDto<String> showfirstCode(@RequestBody CodeRequestDto codeRequestDto){
 
         return codeService.showfirstCode(codeRequestDto);
     }
 
     @PostMapping("/api/secondCode")
-    public ResponseDto<String> showSecondCode(
-                                              @RequestBody CodeRequestDto codeRequestDto){
+    public ResponseDto<String> showSecondCode(@RequestBody CodeRequestDto codeRequestDto){
         return codeService.showSecondCode(codeRequestDto);
     }
 }

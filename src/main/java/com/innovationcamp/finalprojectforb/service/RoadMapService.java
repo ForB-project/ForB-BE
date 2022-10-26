@@ -23,16 +23,11 @@ public class RoadMapService {
     private final TokenProvider tokenProvider;
     private final HtmlRepository htmlRepository;
     private final CssRepository cssRepository;
-
     private final JsRepository jsRepository;
-
     private final ReactRepository reactRepository;
     private final JavaRepository javaRepository;
-
     private final SpringRepository springRepository;
-
     private final TitleRepository titleRepository;
-
     private final ContentRepository contentRepository;
     private final HeartRepository heartRepository;
 

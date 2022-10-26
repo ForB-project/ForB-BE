@@ -16,8 +16,7 @@ public class ChatController {
 
     // 채팅메세지 보내기
     @MessageMapping("/chat/message")
-    public ResponseDto<?> message(ChatRequestDto message,
-                                  @Header("Authorization") String token) {
+    public ResponseDto<?> message(ChatRequestDto message, @Header("Authorization") String token) {
         return chatService.sendMessage(message, token);
     }
 }

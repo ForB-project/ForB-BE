@@ -85,11 +85,14 @@ public class HeartService {
     public ResponseDto<?> LikePost(Long postId, HttpServletRequest request) {
 
         Member member = validateMember(request);
-        if (null == member) {
+        if (member == null) {
             return new ResponseDto<>(null,ErrorCode.MEMBER_NOT_FOUND);
         }
 
         Post post = isPresentPost(postId);
+        if (post == null) {
+            return new ResponseDto<>(null,ErrorCode.ENTITY_NOT_FOUND);
+        }
 
         LikePost checkLike = likePostRepository.findByPostIdAndMemberId(post.getId(), member.getId());
         if (checkLike == null) {

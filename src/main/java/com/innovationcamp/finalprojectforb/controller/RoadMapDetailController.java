@@ -17,8 +17,7 @@ import java.util.Optional;
 @RestController
 public class RoadMapDetailController {
 
-    private final RoadMapDetailService roadMapDetailServercie;
-
+    private final RoadMapDetailService roadMapDetailService;
 
     //html detail
     @GetMapping("/api/roadmap/html/{htmlId}")
@@ -31,7 +30,7 @@ public class RoadMapDetailController {
         log.info(Optional.ofNullable("request 받아지는 accessToken : " + request.getHeader("Authorization")).orElse("UnknownUser"));
         log.info(Optional.ofNullable("request 받아지는 refreshToken : " + request.getHeader("Refresh-Token")).orElse("UnknownUser"));
         page = page -1;
-        return roadMapDetailServercie.showRoadmapHtml(htmlId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapHtml(htmlId,page,size,sortBy,request);
     }
 
     //css detail
@@ -42,7 +41,7 @@ public class RoadMapDetailController {
                                          @RequestParam("sortBy") String sortBy,
                                          HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapCss(cssId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapCss(cssId,page,size,sortBy,request);
     }
 
     //js detail
@@ -53,7 +52,7 @@ public class RoadMapDetailController {
                                         @RequestParam("sortBy") String sortBy,
                                         HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapJs(jsId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapJs(jsId,page,size,sortBy,request);
     }
 
     //react detail
@@ -64,7 +63,7 @@ public class RoadMapDetailController {
                                            @RequestParam("sortBy") String sortBy,
                                            HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapReact(reactId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapReact(reactId,page,size,sortBy,request);
     }
 
     //java detail
@@ -75,7 +74,7 @@ public class RoadMapDetailController {
                                           @RequestParam("sortBy") String sortBy,
                                           HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapJava(javaId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapJava(javaId,page,size,sortBy,request);
     }
 
     //spring detail
@@ -86,6 +85,6 @@ public class RoadMapDetailController {
                                             @RequestParam("sortBy") String sortBy,
                                             HttpServletRequest request){
         page = page -1;
-        return roadMapDetailServercie.showRoadmapSpring(springId,page,size,sortBy,request);
+        return roadMapDetailService.showRoadmapSpring(springId,page,size,sortBy,request);
     }
 }
