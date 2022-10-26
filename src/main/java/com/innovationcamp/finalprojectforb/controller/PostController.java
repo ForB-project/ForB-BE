@@ -49,8 +49,8 @@ public class PostController {
 
     @GetMapping("/api/post/search")
     public ResponseDto<?> searchPost(@RequestParam(value = "keyword") String keyword,
-                                        @RequestParam("page") int page,
-                                        @RequestParam("size") int size) {
+                                     @RequestParam("page") int page,
+                                     @RequestParam("size") int size) {
         page = page -1;
         Pageable pageable = PageRequest.of(page, size);
         try {
