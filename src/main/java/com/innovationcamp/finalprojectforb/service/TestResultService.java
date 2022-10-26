@@ -3,11 +3,15 @@ package com.innovationcamp.finalprojectforb.service;
 import com.innovationcamp.finalprojectforb.dto.ResponseDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultRequestDto;
 import com.innovationcamp.finalprojectforb.dto.TestResultResponseDto;
+import com.innovationcamp.finalprojectforb.jwt.TokenProvider;
+import com.innovationcamp.finalprojectforb.model.Member;
 import com.innovationcamp.finalprojectforb.model.TestResult;
+import com.innovationcamp.finalprojectforb.repository.MemberRepository;
 import com.innovationcamp.finalprojectforb.repository.TestResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +20,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TestResultService {
     private final TestResultRepository testResultRepository;
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     public void createDB2() {
         String[] stackType_List = {
@@ -33,10 +39,10 @@ public class TestResultService {
         };
 
         String[] title2_List = {
-                "'가장 화려하고 눈에 띄는 결과물을 만들어내는 개발자'",
-                "'가장 독창적이고 효율적인 로직을 작성하는 개발자'",
-                "'가장 사용자에게 친화적이고 편리한 서비스를 고민하는 개발자'",
-                "'가장 기본에 충실하고 지능적인 로직을 생각해내는 개발자'"
+                "'가장 화려하고 눈에 띄는 결과물을 만들어내는 프론트엔드 개발자'",
+                "'가장 독창적이고 효율적인 로직을 작성하는 백엔드 개발자'",
+                "'가장 사용자에게 친화적이고 편리한 서비스를 고민하는 프론트엔드 개발자'",
+                "'가장 기본에 충실하고 지능적인 로직을 생각해내는 백엔드 개발자'"
         };
 
         String[] description1_List = {
@@ -59,48 +65,66 @@ public class TestResultService {
     }
 
 
-    public ResponseDto<?> result(TestResultRequestDto testResultRequestDto) {
+    public ResponseDto<?> result(TestResultRequestDto testResultRequestDto, HttpServletRequest request) {
         String type = testResultRequestDto.getType();
         int answerSum = testResultRequestDto.getAnswerSum();
 
-        if (Objects.equals(type, "F")) {
-            String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
-            List<TestResult> testResultList = testResultRepository.findByStackType(GH);
-            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken == null) {
+            if (Objects.equals(type, "F")) {
+                String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
+                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+                return ResponseDto.success(testResultResponseDtoList);
 
-            for (TestResult testResult : testResultList) {
-                testResultResponseDtoList.add(
-                        TestResultResponseDto.builder()
-                                .id(testResult.getId())
-                                .stackType(testResult.getStackType())
-                                .title1(testResult.getTitle1())
-                                .title2(testResult.getTitle2())
-                                .description1(testResult.getDescription1())
-                                .description2(testResult.getDescription2())
-                                .build());
+            } else {
+                String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
+                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+                return ResponseDto.success(testResultResponseDtoList);
             }
-
-            return ResponseDto.success(testResultResponseDtoList);
-
         } else {
-            String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
-            List<TestResult> testResultList = testResultRepository.findByStackType(RS);
-            List<TestResultResponseDto> testResultResponseDtoList = new ArrayList<>();
+            Member member = validateMember(request);
+            if (Objects.equals(type, "F")) {
+                String GH = (answerSum / 100 > answerSum % 100) ? "G" : "H";
+                member.saveStackType(GH);
+                memberRepository.save(member);
+                List<TestResult> testResultList = testResultRepository.findByStackType(GH);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+                return ResponseDto.success(testResultResponseDtoList);
 
-            for (TestResult testResult : testResultList) {
-                testResultResponseDtoList.add(
-                        TestResultResponseDto.builder()
-                                .id(testResult.getId())
-                                .stackType(testResult.getStackType())
-                                .title1(testResult.getTitle1())
-                                .title2(testResult.getTitle2())
-                                .description1(testResult.getDescription1())
-                                .description2(testResult.getDescription2())
-                                .build());
+            } else {
+                String RS = (answerSum / 100 > answerSum % 100) ? "R" : "S";
+                member.saveStackType(RS);
+                memberRepository.save(member);
+                List<TestResult> testResultList = testResultRepository.findByStackType(RS);
+                List<TestResultResponseDto> testResultResponseDtoList = testResultResponseDtoList(testResultList);
+                return ResponseDto.success(testResultResponseDtoList);
             }
-
-            return ResponseDto.success(testResultResponseDtoList);
-
         }
     }
+
+    public Member validateMember(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+
+    private static List<TestResultResponseDto> testResultResponseDtoList(List<TestResult> testResultList) {
+        List<TestResultResponseDto> responseDtoList = new ArrayList<>();
+        for (TestResult testResult : testResultList) {
+            TestResultResponseDto responseDto = TestResultResponseDto.builder()
+                    .id(testResult.getId())
+                    .stackType(testResult.getStackType())
+                    .title1(testResult.getTitle1())
+                    .title2(testResult.getTitle2())
+                    .description1(testResult.getDescription1())
+                    .description2(testResult.getDescription2())
+                    .build();
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
+
 }

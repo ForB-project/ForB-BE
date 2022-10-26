@@ -1,7 +1,6 @@
 package com.innovationcamp.finalprojectforb.model;
 
 import com.innovationcamp.finalprojectforb.dto.NicknameResDto;
-import com.innovationcamp.finalprojectforb.dto.StackTypeRequestDto;
 import com.innovationcamp.finalprojectforb.enums.Authority;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMember;
 import com.innovationcamp.finalprojectforb.model.chat.ChatMessage;
@@ -74,8 +73,8 @@ public class Member extends Timestamped {
         return memberId;
     }
 
-    public void saveStackType(StackTypeRequestDto requestDto) {
-        this.stackType = requestDto.getStackType();
+    public void saveStackType(String stackType) {
+        this.stackType = stackType;
     }
 
     public void updateNickname(NicknameResDto requestDto) {
