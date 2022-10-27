@@ -54,7 +54,7 @@ public class ChatRoomService {
         List<ChatRoom> findPubRoom = chatRoomRepository.findByMemberId(member.getId());
         List<ChatMember> findSubRoom = chatMemberRepository.findByMemberId(targetMemberId);
 
-        // 이미 동일한 채팅방!!에 pub/sub 유저가 있다면 방 만들기 취소 => 방만 체크
+        // pub입장에서 방 만들때 중복 채팅 유저일 경우 채팅방 생성 X
         if (existPubMember == true && existSubMember == true) {
             for (ChatRoom chatRoom : findPubRoom) {
                 for (ChatMember chatMember : findSubRoom) {
@@ -68,7 +68,7 @@ public class ChatRoomService {
         List<ChatRoom> findPubRoom2 = chatRoomRepository.findAll();
         List<ChatMember> findSubRoom2 = chatMemberRepository.findAll();
 
-        // 이미 대화중인 사람하고 다시 대화하지 않기
+        // sub입장에서 방 만들때 중복 채팅 유저일 경우 채팅방 생성 X
         if (existPubMember2 == true && existSubMember2 == true) {
             for (ChatRoom chatRoom : findPubRoom2) {
                 for (ChatMember chatMember : findSubRoom2) {
