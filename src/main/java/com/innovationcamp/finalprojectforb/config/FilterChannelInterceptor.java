@@ -22,10 +22,9 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         //stomp헤더에서 토큰 가져오기 : 클라이언트단에서 웹 소켓 요청시 헤더값에 토큰검증값을 얻을수 있다.
         //StompHeaderAccessor 를 통해서 세션의 데이터를 얻어올 수 있다(각종 웹소켓 관련 정보)
-
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
         //StompCommand.CONNECT : command로 connect를 시도할 때 로그인 여부 확인
-        //첫 연결 시도에만 사용자를 인증하고 이후엔 저장해둔 정보를 사용할 것이므로 getCommand()로 연결 시도인지 확인한다
         if (StompCommand.CONNECT == accessor.getCommand()) { // websocket 연결요청
             String jwtToken = Optional.ofNullable(accessor.getFirstNativeHeader("Authorization")).orElse("UnknownUser");
             log.info("CONNECT 시 토큰이 들어오는지 : " + jwtToken);
@@ -49,11 +48,11 @@ public class FilterChannelInterceptor implements ChannelInterceptor {
     @Override
     public void postSend(Message message, MessageChannel channel, boolean sent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        //세션의 ID를 가져오려면
-        String sessionId = accessor.getSessionId();
+
         switch (accessor.getCommand()) {
             case CONNECT:
                 // 유저가 Websocket으로 connect()를 한 뒤 호출됨
+
                 break;
             case DISCONNECT:
                 // 유저가 Websocket으로 disconnect() 를 한 뒤 호출됨 or 세션이 끊어졌을 때 발생함(페이지 이동~ 브라우저 닫기 등)

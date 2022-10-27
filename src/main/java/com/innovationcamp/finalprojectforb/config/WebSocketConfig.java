@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /*
     configureClientInboundChannel : stomp 연결 시도 시 호출되는 메소드
-    StompHandler가 Websocket 앞단에서 token 을 체크할 수 있도록 인터셉터로 설정
+    filterChannelInterceptor가 Websocket 앞단에서 token 을 체크할 수 있도록 인터셉터로 설정
     */
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {

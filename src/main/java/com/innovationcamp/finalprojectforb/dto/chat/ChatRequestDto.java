@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @Data
 public class ChatRequestDto {
-    //    private MessageType type; // 메시지 타입
     private Long roomId;
     private String message;
 }
