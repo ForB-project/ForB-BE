@@ -50,11 +50,11 @@ Final project Team 6
 <br>
 <h2>⚙️ 기술 스택 </h2>
 <br>
-<img src="https://img.shields.io/badge/Spring Boot-#6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon EC2-#FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon S3-#569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon RDS-#527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
-<img src="https://img.shields.io/badge/MySQL-#4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
 
 
 <br>
