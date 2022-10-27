@@ -75,7 +75,6 @@ https://www.youtube.com/watch?v=SZCCor7icFg
 
 - 이태권 https://github.com/momoco-git <br>
 - 조무제 https://github.com/moojecho <br>
-- 김준하 https://github.com/Dev-Dotoli <br>
 
 <br><br>
 
