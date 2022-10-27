@@ -1,7 +1,5 @@
 <h1>  ForB 🦉 </h1>
 
-Final project Team 6
-
 <br>
 
 <br>
@@ -22,10 +20,10 @@ Final project Team 6
 <br>
 
 ### 사이트 주소🌐
-[https://www.forb.site/]
+https://www.forb.site/
 
 ### 시연 영상📹
-[https://www.youtube.com/watch?v=SZCCor7icFg]
+https://www.youtube.com/watch?v=SZCCor7icFg
 
 <br>
 
@@ -63,11 +61,6 @@ Final project Team 6
 
 [Team 6 Notion](https://www.notion.so/F-or-B-8ef2e74bb1184d23a83c67eaab82fb36)
 
-<br>
-
-### Dashboard📋
-
-[Innovation Camp_Seoul Dashboard](https://docs.google.com/spreadsheets/d/12q6UUsaQN5Vb_wK__GHpFbfmPXJ9LlOnpu3dwfwx6JY/edit#gid=430440458)
 
 <br>
 
