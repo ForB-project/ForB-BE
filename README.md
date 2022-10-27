@@ -1,1 +1,94 @@
-# ForB-BE
+<h1>  ForB 🦉 </h1>
+
+Final project Team 6
+
+<br>
+
+<br>
+개발을 처음 배우려고 할 때, 누구나 하는 고민
+<br>
+
+<h3> 'Front-end와 Back-end중 내게 잘어울리고, 더 잘 할 수 있는건 뭘까?' 🤔 </h3>
+
+<br>
+그러한 고민을 덜어주기 위해 저희가 직접 만들었습니다.
+
+<br>
+내 개발 성향부터 개발 공부를 위한 초석을 다지기 쉽게 로드맵과 커뮤니티를 통해 소통하면서
+
+<br>
+자신의 실력을 기를 수 있게 해주는 서비스를 제공합니다!
+
+<br>
+
+### 사이트 주소🌐
+[https://www.forb.site/]
+
+### 시연 영상📹
+[https://www.youtube.com/watch?v=SZCCor7icFg]
+
+<br>
+
+<h2>❗ 주요 기능 ❗</h2>
+<br>
+✔️ 간단한 질문을 제공하고 사용자의 답변에따라 `F/B성향`을 파악하고 추천해드립니다. <br><br>
+
+✔️ 테스트가 끝난 후에는 간단한 `체험코딩`을 진행해볼 수 있습니다. <br>
+
+✔️ 제공되는 간단한 `로드맵`으로 앞으로 공부할 내용을 확인 할 수 있습니다. <br>
+
+✔️ 제공 된 로드맵을 배경으로 `커뮤니티`에 속해 여러 사용자들과 소통할 수 있습니다. <br>
+
+✔️ 커뮤니티에서 좋은 컨텐츠를 제공한 유저에게 `메시지`기능으로 직접 소통할 수 있습니다. <br>
+<br><br>
+## Contributors💻
+| 박세진                                                                             | 이소현                                                                                            |
+|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| 소셜로그인(카카오)/ 코드 체험(자바)/ 로드맵 CRD 및 좋아요, 검색, 페이징 기능/ AWS S3이미지 업로드 / 마이페이지 / 채팅 기능 | 소셜로그인(카카오)/ 심리테스트 로직 / 게시글 및 댓글의 CRUD, 좋아요, 검색, 페이징 기능 / AWS S3이미지 업로드/ 배포 관리/ 로드맵 기본 컨텐츠 자료 크롤링 |
+| Back-end                                                                        | Back-end                                                                                       |
+
+<br>
+<h2>⚙️ 기술 스택 </h2>
+<br>
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/Spring Boot-#6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"/>
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/Amazon EC2-#FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"/>
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/Amazon S3-#569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/Amazon RDS-#527FFF?style=for-the-badge&logo=Amazon RDS&logoColor=white"/>
+<img style="margin:5px; border: 2px solid white; border-radius: 20px" src="https://img.shields.io/badge/MySQL-#4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
+
+
+<br>
+
+### S.A📑
+
+[Team 6 Notion](https://www.notion.so/F-or-B-8ef2e74bb1184d23a83c67eaab82fb36)
+
+<br>
+
+### Dashboard📋
+
+[Innovation Camp_Seoul Dashboard](https://docs.google.com/spreadsheets/d/12q6UUsaQN5Vb_wK__GHpFbfmPXJ9LlOnpu3dwfwx6JY/edit#gid=430440458)
+
+<br>
+
+## Member🌱
+
+🛠️ BE : <br>
+
+- 이소현 https://github.com/sohyuneeee <br>
+- 박세진 https://github.com/codesejin <br>
+
+🪄 FE : <br>
+
+- 이태권 https://github.com/momoco-git <br>
+- 조무제 https://github.com/moojecho <br>
+- 김준하 https://github.com/Dev-Dotoli <br>
+
+<br><br>
+
+
+<br><br>
+
+---
+
+Sparta Innovation Camp in Seoul
